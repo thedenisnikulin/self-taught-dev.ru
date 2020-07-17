@@ -15,8 +15,8 @@ job_tag_aliases = {
         'python': ['python'],
         'java': ['java ', 'java/', 'java-', 'java,'],  # those symbols at the end are important not to get JS jobs
         'javascript': ['javascript', 'js'],
-        'c#': ['c#', 'с#'],   # some employers use cyrillic 'c', so double check
-        'c++': ['c++', 'с++'],
+        'c#': ['c#', 'с#'],     # some employers use cyrillic 'c', so double check
+        'c++': ['c++', 'с++'],  # yet another 'c' double check
         'go': ['go', 'golang'],
         'php': ['php']
     }
@@ -24,29 +24,32 @@ job_tag_aliases = {
 
 
 def prepare_tags(tags: dict) -> str:
-    print(tags)
     for tag in tags.values():
         # to lower case
         tag = [t.lower() for t in tag]
 
     # AND & OR - operators from hh.ru api
-    type_tag = f"({' OR '.join(tags['type'])})" if ('type' in tags.keys()) and (len(tags['type[]']) != 0) else ''
-    tech_tag = f"({' OR '.join(tags['tech'])})" if ('tech' in tags.keys()) and (len(tags['tech[]']) != 0) else ''
-    city_tag = tags['city'][0]
+    type_tag = f"({' OR '.join(tags['type'])})" if ('type' in tags.keys()) and (len(tags['type']) != 0) else ''
+    tech_tag = f"({' OR '.join(tags['tech'])})" if ('tech' in tags.keys()) and (len(tags['tech']) != 0) else ''
+    city_tag = tags['city']
+    print(tags['city'])
     # if both are empty, just fill in 'developer', 'cos we don't want to have an empty query
-    if type_tag + tech_tag == '':
+    if type_tag + tech_tag + city_tag == '':
         type_tag = 'developer OR разработчик OR программист'
 
     return f"{type_tag} AND {tech_tag} AND {city_tag}"
 
 
-def get_hh_jobs(tags: dict, page=1) -> Tuple[list, int]:
+def get_hh_jobs(tags=None , page: int = 1) -> Tuple[list, int]:
+    if tags is None:
+        tags = {'type': ['developer OR разработчик OR программист'], 'city': ''}
     jobs = []               # jobs to be received
     pages = 1               # pages to be received
     querystring = dict()    # querystring that we will construct
 
     # prepare tags
     tags_str = prepare_tags(tags)
+    print(tags_str)
 
     # update querystring according to hh.ru api specification
     querystring['text'] = tags_str      # set text
@@ -61,7 +64,6 @@ def get_hh_jobs(tags: dict, page=1) -> Tuple[list, int]:
         data = json.loads(data)
         jobs.extend(data['items'])
         pages = int(data['pages'])
-    print(f'PAGES: {pages}')
     return jobs, pages
 
 
@@ -87,9 +89,11 @@ def without_degree(jobs: list):
 def prepare_jobs(jobs: list):
     prepared_jobs = []
     for job in jobs:
-        # get set of tags that job name may contain.
-        type_tags = set([tag for tag, aliases in job_tag_aliases['type'].items() for alias in aliases if alias in job['name'].lower()])
-        tech_tags = set([tag for tag, aliases in job_tag_aliases['tech'].items() for alias in aliases if alias in job['name'].lower()])
+        # get a set of tags that job name may contain. (we use set to exclude repetitive ones)
+        type_tags = set([tag for tag, aliases in job_tag_aliases['type'].items()
+                         for alias in aliases if alias in (job['name'] + job['snippet']['requirement']).lower()])
+        tech_tags = set([tag for tag, aliases in job_tag_aliases['tech'].items()
+                         for alias in aliases if alias in (job['name'] + job['snippet']['requirement']).lower()])
         prepared_jobs.append({
             'name': job['name'],
             'employer': job['employer']['name'],

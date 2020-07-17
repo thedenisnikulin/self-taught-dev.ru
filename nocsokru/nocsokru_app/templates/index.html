@@ -14,22 +14,8 @@
         <div class="header"></div>
         <div class="big-text"></div>
         <div class="tags">
-            <div class="tech-tags">
-                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Python" />
-                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Java" />
-                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="JavaScript" />
-                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="C#" />
-                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="C++" />
-                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Go" />
-                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="PHP" />
-            </div>
-            <div class="type-tags">
-                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Fullstack" />
-                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Frontend" />
-                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Backend" />
-                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Mobile" />
-                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Junior" />
-            </div>
+            <div class="tech-tags"></div>
+            <div class="type-tags"></div>
             <div class="city-tags dropdown">
                 <button id="dd-button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Выберите город
                 <span class="caret"></span></button>
@@ -75,34 +61,41 @@
                 </ul>
             </div>
         </div>
-        <div class="vacancies"></div>
+        <div id="vacancies"></div>
+        <div id="loadbtn-container"></div>
         <div class="pagination"></div>
         <div class="footer"></div>
 
         <script type="text/javascript">
             // see static/script.js for more information
 
+            // map tags
+            const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP']
+            const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior']
+
+            for (const t of techtags) {
+                $('.tech-tags').append(`<input class="tech" type="button" onclick="app.handlers.setRequest(this.value, this.className);app.handlers.sendRequest()" value="${t}" />`)
+            }
+            for (const t of typetags) {
+                $('.type-tags').append(`<input class="type" type="button" onclick="app.handlers.setRequest(this.value, this.className);app.handlers.sendRequest()" value="${t}" />`)
+            }
+
+            app.handlers.addLoadButton({{ pages }})
+
             // set initial vacancies and csrf token
-            setVacancies({{ jobs|safe }})
-            const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            app.handlers.setVacancies({{ jobs|safe }})
+            app.state.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
             // handle dropdown-menu logic
-            $(".dropdown-menu a").on('click', function(e) {
-              e.preventDefault();
-              let city = $(this).text();
-              document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
-              // request object from static/script.js
-              request.city = city
-              sendRequest()
-              console.log(request)
+                $(".dropdown-menu a").on('click', function(e) {
+                e.preventDefault();
+                let city = $(this).text();
+                document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
+                // request object is from static/script.js
+                app.state.request.tags.city = city
+                console.log(app.state.request)
+                app.handlers.sendRequest()
             })
-
-            if (currentPageNum < pagesNum) {
-                $(".vacancies").after("<button id='load-more' onclick='loadMore()'>Загрузить ещё</button>")
-            } else {
-                let loadBtn = document.getElementById("load-more");
-                loadBtn.parentNode.removeChild(loadBtn);
-            }
         </script>
     </body>
 </html>
