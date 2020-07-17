@@ -1,0 +1,108 @@
+<html>
+    <head>
+        {% csrf_token  %}
+        {% load static %}
+        <title>Hey</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <!--load static files-->
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <script src="{% static 'script.js' %}"></script>
+    </head>
+    <body>
+        <div class="header"></div>
+        <div class="big-text"></div>
+        <div class="tags">
+            <div class="tech-tags">
+                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Python" />
+                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Java" />
+                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="JavaScript" />
+                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="C#" />
+                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="C++" />
+                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Go" />
+                <input class="tech" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="PHP" />
+            </div>
+            <div class="type-tags">
+                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Fullstack" />
+                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Frontend" />
+                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Backend" />
+                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Mobile" />
+                <input class="type" type="button" onclick="setRequest(this.value, this.className);sendRequest()" value="Junior" />
+            </div>
+            <div class="city-tags dropdown">
+                <button id="dd-button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Выберите город
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-header">Россия</li>
+                    <li><a href="#">Москва</a></li>
+                    <li><a href="#">Санкт-Петербург</a></li>
+                    <li><a href="#">Владивосток</a></li>
+                    <li><a href="#">Волгоград</a></li>
+                    <li><a href="#">Воронеж</a></li>
+                    <li><a href="#">Екатеринбург</a></li>
+                    <li><a href="#">Казань</a></li>
+                    <li><a href="#">Калуга</a></li>
+                    <li><a href="#">Краснодар</a></li>
+                    <li><a href="#">Красноярск</a></li>
+                    <li><a href="#">Кемерово</a></li>
+                    <li><a href="#">Нижний Новгород</a></li>
+                    <li><a href="#">Новосибирск</a></li>
+                    <li><a href="#">Ростов-на-Дону</a></li>
+                    <li><a href="#">Самара</a></li>
+                    <li><a href="#">Саратов</a></li>
+                    <li><a href="#">Сочи</a></li>
+                    <li><a href="#">Уфа</a></li>
+                    <li><a href="#">Ярославль</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">Украина</li>
+                    <li><a href="#">Киев</a></li>
+                    <li><a href="#">Днепр</a></li>
+                    <li><a href="#">Львов</a></li>
+                    <li><a href="#">Одесса</a></li>
+                    <li><a href="#">Харьков</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">Беларусь</li>
+                    <li><a href="#">Минск</a></li>
+                    <li><a href="#">Брест</a></li>
+                    <li><a href="#">Витебск</a></li>
+                    <li><a href="#">Гомель</a></li>
+                    <li><a href="#">Гродно</a></li>
+                    <li><a href="#">Могилев</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">Казахстан</li>
+                    <li><a href="#">Нур-султан</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="vacancies"></div>
+        <div class="pagination"></div>
+        <div class="footer"></div>
+
+        <script type="text/javascript">
+            // see static/script.js for more information
+
+            // set initial vacancies and csrf token
+            setVacancies({{ jobs|safe }})
+            const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+            // handle dropdown-menu logic
+            $(".dropdown-menu a").on('click', function(e) {
+              e.preventDefault();
+              let city = $(this).text();
+              document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
+              // request object from static/script.js
+              request.city = city
+              sendRequest()
+              console.log(request)
+            })
+
+            if (currentPageNum < pagesNum) {
+                $(".vacancies").after("<button id='load-more' onclick='loadMore()'>Загрузить ещё</button>")
+            } else {
+                let loadBtn = document.getElementById("load-more");
+                loadBtn.parentNode.removeChild(loadBtn);
+            }
+        </script>
+    </body>
+</html>
