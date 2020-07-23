@@ -2,16 +2,18 @@
     <head>
         {% csrf_token  %}
         {% load static %}
-        <title>Hey</title>
+        <title>Index</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <!--load static files-->
         <link rel="stylesheet" href="{% static 'styles.css' %}">
-        <script src="{% static 'script.js' %}"></script>
+        <script src="{% static 'index.js' %}"></script>
     </head>
     <body>
-        <div class="header"></div>
+        <div class="header">
+            <button onclick="location.href='{% url 'create_job' %}'">Разместить вакансию</button>
+        </div>
         <div class="big-text"></div>
         <div class="tags">
             <div class="tech-tags"></div>
@@ -67,7 +69,7 @@
         <div class="footer"></div>
 
         <script type="text/javascript">
-            // see static/script.js for more information
+            // see static/index.js for more information
 
             // map tags
             const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP']

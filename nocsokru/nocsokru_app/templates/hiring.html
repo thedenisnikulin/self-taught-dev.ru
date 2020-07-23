@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        {% csrf_token  %}
+        {% load static %}
+        <title>Hiring</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src='https://oplata.qiwi.com/popup/v1.js'></script>
+        <!--load static files-->
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <script src="{% static 'hiring.js' %}"></script>
+        <script src="{% static 'utils.js' %}"></script>
+    </head>
+    <body>
+        <div class="header">
+            <button onclick="location.href='{% url 'index' %}'">Вернуться на главную</button>
+        </div>
+        <form onsubmit="return hiring.handlers.handleSubmit()">
+            <input name="name" onchange="hiring.handlers.handleChange(this)">
+            <input name="employer" onchange="hiring.handlers.handleChange(this)">
+            <input name="employer_logo" onchange="hiring.handlers.handleChange(this)">
+            <input name="city" onchange="hiring.handlers.handleChange(this)">
+            <input name="tags" onchange="hiring.handlers.handleChange(this)">
+            <input name="url" onchange="hiring.handlers.handleChange(this)">
+            <input name="date" onchange="hiring.handlers.handleChange(this)">
+            <input type="submit">
+        </form>
+        <button onclick="hiring.handlers.openBill()">open pop-up</button>
+    </body>
+</html>
