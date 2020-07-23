@@ -19,6 +19,7 @@
             <button onclick="location.href='{% url 'index' %}'">Вернуться на главную</button>
         </div>
         <form onsubmit="return hiring.handlers.handleSubmit()">
+<!--            TODO add proper tag selection-->
             <input name="name" onchange="hiring.handlers.handleChange(this)">
             <input name="employer" onchange="hiring.handlers.handleChange(this)">
             <input name="employer_logo" onchange="hiring.handlers.handleChange(this)">
@@ -28,6 +29,8 @@
             <input name="date" onchange="hiring.handlers.handleChange(this)">
             <input type="submit">
         </form>
-        <button onclick="hiring.handlers.openBill()">open pop-up</button>
+        <script>
+            utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        </script>
     </body>
 </html>

@@ -7,14 +7,19 @@ import hashlib
 # local
 from .services.hh import get_hh_jobs, without_degree, prepare_jobs
 from .services import qiwi_api_managment as qiwi_api
+from .models import PaidVacancy
 
 
-def main(req: HttpRequest):
+def index(req: HttpRequest):
     if req.method == 'GET':
         jobs, pages = get_hh_jobs()
         jobs = without_degree(jobs)
         jobs = prepare_jobs(jobs)
-        context = {'jobs': json.dumps(jobs), 'pages': pages}
+        paid_vacancies = []
+        for v in PaidVacancy.objects.all():
+            paid_vacancies.append(v.serialize())
+        print(paid_vacancies)
+        context = {'jobs': json.dumps(jobs), 'paid': json.dumps(paid_vacancies), 'pages': pages}
         return render(req, 'index.html', context)
 
 
@@ -29,33 +34,51 @@ def load_jobs(req: HttpRequest):
         jobs = without_degree(jobs)
         # make jobs look prettier
         jobs = prepare_jobs(jobs)
-        [print(j['city']) for j in jobs]
-        return HttpResponse(json.dumps({'jobs': jobs, 'pages': pages}))
+        # prepare paid vacancies
+        paid_vacancies = []
+        tags_list = []
+        tags_list.extend(tags['tech'])
+        tags_list.extend(tags['type'])
+        tags_list = [t.lower() for t in tags_list]
+        print(tags_list)
+        for v in PaidVacancy.objects.all():
+            # iterates through dict, but tech&type lists are needed
+            for tag in json.loads(v.tags.lower()).values():
+                if any(t in tag for t in tags_list):
+                    paid_vacancies.append(v.serialize())
+                    break
+        print(len(paid_vacancies))
+        return HttpResponse(json.dumps({'jobs': jobs, 'paid': paid_vacancies, 'pages': pages}))
 
 
-def create_job(req: HttpRequest):
+def create_bill(req: HttpRequest):
     if req.method == "GET":
         return render(req, 'hiring.html')
     elif req.method == "POST":
         bill_id = json.loads(req.body.decode('utf-8'))
-        # bill_id = hashlib.sha256(str(job).encode()).hexdigest()
-        print(bill_id)
-        redirect_url = f'{req.scheme}://{req.get_host()}/jobs/verify?id={bill_id}'
-        print(redirect_url)
-        pay_url = f"{qiwi_api.bill(bill_id)}&{parse.urlencode({'successUrl': redirect_url, 'allowedPaySources': 'qw'})}"
-        return HttpResponse(json.dumps({'payUrl': qiwi_api.bill(bill_id)}))
+        pay_url = qiwi_api.bill(bill_id)
+        return HttpResponse(json.dumps({'payUrl': pay_url}))
 
 
-def verify_job(req: HttpRequest):
-    if req.method == 'GET':
-        bill_id = req.GET.get('id')
-        print(bill_id)
-        if qiwi_api.is_paid(bill_id):
-            # do some database logic
-            pass
-        return HttpResponse(json.dumps({'is_paid': qiwi_api.is_paid(bill_id)}))
-    elif req.method == "POST":
+def verify_bill(req: HttpRequest):
+    if req.method == "POST":
         bill_id = json.loads(req.body.decode('utf-8'))
         print(bill_id)
         is_paid = qiwi_api.is_paid(bill_id)
-        return HttpResponse(json.dumps({'is_paid': is_paid}))
+        return HttpResponse(json.dumps({'isPaid': is_paid}))
+
+
+def create_job(req: HttpRequest):
+    if req.method == "POST":
+        req_body = json.loads(req.body.decode('utf-8'))
+        new_vacancy = PaidVacancy(
+            name=req_body['name'],
+            employer=req_body['employer'],
+            employer_logo=req_body['employer_logo'],
+            city=req_body['city'],
+            tags=json.dumps(req_body['tags']),
+            url=req_body['url'],
+            date=req_body['date'],
+            color='#FFFFFF'
+        )
+        new_vacancy.save()

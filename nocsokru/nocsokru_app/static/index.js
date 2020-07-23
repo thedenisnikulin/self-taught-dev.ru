@@ -11,6 +11,7 @@ let app = {
             page: 1
         },
         // vacancies to render
+        paidVacancies: [],
         vacancies: [],
         // number of pages. Gets received from server
         pages: 1,
@@ -19,53 +20,29 @@ let app = {
     handlers: {
         // send app.state.request to server with POST request
         sendRequest: () => {
-            $.ajax({
-                url: '/jobs/load',
-                type: 'POST',
-                // some csrf token setups
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", app.state.csrftoken);
-                },
-                data: JSON.stringify(app.state.request),
-                contentType:"application/json; charset=utf-8",
-                dataType:"json",
+            utils.sendRequest('/jobs/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
                     console.log('set to 1')
                     app.state.request.page = 1
                     app.handlers.setVacancies(data.jobs)
+                    console.log(data.paid)
+                    app.handlers.setPaidVacancies(data.paid)
                     app.state.pages = data.pages
                     app.handlers.addLoadButton(app.state.pages)
-                    console.log(`request: ${JSON.stringify(app.state.request)}\npages: ${app.state.pages}\nvacancies_length: ${app.state.vacancies.length}`)
-                },
-                error: () => {
-                    alert('Internal Server Error.')
                 }
-            });
+            })
         },
         // load more vacancies
         loadMore: () => {
-            $.ajax({
-                url: '/jobs/load',
-                type: 'POST',
-                // some csrf token setups
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", app.state.csrftoken);
-                },
-                data: JSON.stringify(app.state.request),
-                contentType:"application/json; charset=utf-8",
-                dataType:"json",
+            utils.sendRequest('/jobs/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
-                    console.log('set to 1')
-                    app.state.request.page = 1
-                    app.handlers.setVacancies(data.jobs)
+                    app.handlers.addVacancies(data.jobs)
                     app.state.pages = data.pages
+                    app.state.request.page++
                     app.handlers.addLoadButton(app.state.pages)
                     console.log(`request: ${JSON.stringify(app.state.request)}\npages: ${app.state.pages}\nvacancies_length: ${app.state.vacancies.length}`)
-                },
-                error: () => {
-                    alert('Internal Server Error.')
                 }
-            });
+            })
         },
         // set app.state.request. Used for setting tags
         setRequest: (value, className) => {
@@ -109,6 +86,24 @@ let app = {
             document.getElementById("vacancies").innerHTML = ""
             app.handlers.addVacancies(jobs)
         },
+        setPaidVacancies: (jobs) => {
+            document.getElementById("paid-vacancies").innerHTML = ""
+            app.state.paidVacancies = []
+            for (let j=0; j<jobs.length; j++) {
+                console.log(jobs[j].tags)
+                app.state.paidVacancies.push(
+                    `<div class="paid-vacancy">
+                        <p class="name">${jobs[j].name}<\p>
+                        <p class="employer">${jobs[j].employer}<\p>
+                        <p class="city">${jobs[j].city}<\p>
+                        <p class="tags">${jobs[j].tags.type.concat(jobs[j].tags.tech)}<\p>
+                        <p class="url">${jobs[j].url}<\p>
+                        <p class="date">${jobs[j].date}<\p>
+                    <\div>`
+                )
+                document.getElementById("paid-vacancies").innerHTML += app.state.paidVacancies[j]
+            }
+        },
         // set app.request.city by value from dropdown city selection list
         setCity: () => {
             const city = document.getElementById('dd-city-list').value
@@ -120,7 +115,7 @@ let app = {
             if (app.state.request.page < pgs) {
                 console.log('insert')
                 // if no element with id 'load-more', then place such element after 'vacancies'
-                !document.getElementById("loadbtn") && $("#loadbtn-container").append("<button id='loadbtn' onclick='loadMore()'>Загрузить ещё</button>")
+                !document.getElementById("loadbtn") && $("#loadbtn-container").append("<button id='loadbtn' onclick='app.handlers.loadMore()'>Загрузить ещё</button>")
             } else {
                 console.log('remove')
                 $('#loadbtn').remove()

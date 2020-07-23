@@ -1,4 +1,21 @@
 let utils = {
+    csrftoken: '',
+    sendRequest: (url, type, data, handlers) => {
+        $.ajax({
+            url: url,
+            type: type,
+            // some csrf token setups
+            beforeSend: function (xhr) {
+                const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+                xhr.setRequestHeader("X-CSRFToken", utils.csrftoken);
+            },
+            data: data,
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: handlers.success,
+            error: handlers.error === undefined ? () => alert('Internal Server Error.') : handlers.error
+        })
+    },
     generateHash: (str) => {
         let hash = 0;
         if (str.length == 0) {

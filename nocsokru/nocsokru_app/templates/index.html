@@ -9,10 +9,11 @@
         <!--load static files-->
         <link rel="stylesheet" href="{% static 'styles.css' %}">
         <script src="{% static 'index.js' %}"></script>
+        <script src="{% static 'utils.js' %}"></script>
     </head>
     <body>
         <div class="header">
-            <button onclick="location.href='{% url 'create_job' %}'">Разместить вакансию</button>
+            <button onclick="location.href='{% url 'create_bill' %}'">Разместить вакансию</button>
         </div>
         <div class="big-text"></div>
         <div class="tags">
@@ -63,6 +64,7 @@
                 </ul>
             </div>
         </div>
+        <div id="paid-vacancies"></div>
         <div id="vacancies"></div>
         <div id="loadbtn-container"></div>
         <div class="pagination"></div>
@@ -85,8 +87,9 @@
             app.handlers.addLoadButton({{ pages }})
 
             // set initial vacancies and csrf token
+            app.handlers.setPaidVacancies({{ paid|safe }});
             app.handlers.setVacancies({{ jobs|safe }})
-            app.state.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
             // handle dropdown-menu logic
                 $(".dropdown-menu a").on('click', function(e) {
