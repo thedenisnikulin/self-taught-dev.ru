@@ -6,6 +6,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
         <!--load static files-->
         <link rel="stylesheet" href="{% static 'styles.css' %}">
         <script src="{% static 'index.js' %}"></script>
@@ -13,55 +14,79 @@
     </head>
     <body>
         <div class="header">
-            <button onclick="location.href='{% url 'create_bill' %}'">Разместить вакансию</button>
+            <p class="logo">{<span class='excl'>!</span><span class="ncsdgr">csdegree</span>}</p>
+            <button class="publish-btn" onclick="location.href='{% url 'create_bill' %}'">Разместить вакансию</button>
         </div>
-        <div class="big-text"></div>
+        <div class="big-text">
+            <div class="title-container-left">
+                <p class="big-title-left">Software Developer</p>
+                <p class="big-title-left">без высшего образования</p>
+                <p class="small-title-left">Первый русскоязычный сервис для поиска</p>
+                <p class="small-title-left">работы в IT без высшего технического</p>
+                <p class="small-title-left">образования.</p>
+            </div>
+            <div class="title-container-right">
+                <p class="big-title-right">58% вакансий в IT </p>
+                <p class="big-title-right">не требуют ВО.*</p>
+                <p class="small-title-right">* вывод на основе анализа вакансий</p>
+                <p class="small-title-right">сервиса для поиска работы</p>
+            </div>
+        </div>
         <div class="tags">
-            <div class="tech-tags"></div>
-            <div class="type-tags"></div>
-            <div class="city-tags dropdown">
-                <button id="dd-button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Выберите город
-                <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li class="dropdown-header">Россия</li>
-                    <li><a href="#">Москва</a></li>
-                    <li><a href="#">Санкт-Петербург</a></li>
-                    <li><a href="#">Владивосток</a></li>
-                    <li><a href="#">Волгоград</a></li>
-                    <li><a href="#">Воронеж</a></li>
-                    <li><a href="#">Екатеринбург</a></li>
-                    <li><a href="#">Казань</a></li>
-                    <li><a href="#">Калуга</a></li>
-                    <li><a href="#">Краснодар</a></li>
-                    <li><a href="#">Красноярск</a></li>
-                    <li><a href="#">Кемерово</a></li>
-                    <li><a href="#">Нижний Новгород</a></li>
-                    <li><a href="#">Новосибирск</a></li>
-                    <li><a href="#">Ростов-на-Дону</a></li>
-                    <li><a href="#">Самара</a></li>
-                    <li><a href="#">Саратов</a></li>
-                    <li><a href="#">Сочи</a></li>
-                    <li><a href="#">Уфа</a></li>
-                    <li><a href="#">Ярославль</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Украина</li>
-                    <li><a href="#">Киев</a></li>
-                    <li><a href="#">Днепр</a></li>
-                    <li><a href="#">Львов</a></li>
-                    <li><a href="#">Одесса</a></li>
-                    <li><a href="#">Харьков</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Беларусь</li>
-                    <li><a href="#">Минск</a></li>
-                    <li><a href="#">Брест</a></li>
-                    <li><a href="#">Витебск</a></li>
-                    <li><a href="#">Гомель</a></li>
-                    <li><a href="#">Гродно</a></li>
-                    <li><a href="#">Могилев</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Казахстан</li>
-                    <li><a href="#">Нур-султан</a></li>
-                </ul>
+            <div class="tech-tags-container">
+                <p class="tags-text">Технологии</p>
+                <div class="tech-tags"></div>
+            </div>
+            <div class="type-tags-container">
+                <p class="tags-text">Тип</p>
+                <div class="type-tags"></div>
+            </div>
+            <div class="city-tags-container">
+                <p class="tags-text">Город</p>
+                <div class="city-tags dropdown">
+                    <button id="dd-button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Выберите город
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">Россия</li>
+                        <li><a href="#">Москва</a></li>
+                        <li><a href="#">Санкт-Петербург</a></li>
+                        <li><a href="#">Владивосток</a></li>
+                        <li><a href="#">Волгоград</a></li>
+                        <li><a href="#">Воронеж</a></li>
+                        <li><a href="#">Екатеринбург</a></li>
+                        <li><a href="#">Казань</a></li>
+                        <li><a href="#">Калуга</a></li>
+                        <li><a href="#">Краснодар</a></li>
+                        <li><a href="#">Красноярск</a></li>
+                        <li><a href="#">Кемерово</a></li>
+                        <li><a href="#">Нижний Новгород</a></li>
+                        <li><a href="#">Новосибирск</a></li>
+                        <li><a href="#">Ростов-на-Дону</a></li>
+                        <li><a href="#">Самара</a></li>
+                        <li><a href="#">Саратов</a></li>
+                        <li><a href="#">Сочи</a></li>
+                        <li><a href="#">Уфа</a></li>
+                        <li><a href="#">Ярославль</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Украина</li>
+                        <li><a href="#">Киев</a></li>
+                        <li><a href="#">Днепр</a></li>
+                        <li><a href="#">Львов</a></li>
+                        <li><a href="#">Одесса</a></li>
+                        <li><a href="#">Харьков</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Беларусь</li>
+                        <li><a href="#">Минск</a></li>
+                        <li><a href="#">Брест</a></li>
+                        <li><a href="#">Витебск</a></li>
+                        <li><a href="#">Гомель</a></li>
+                        <li><a href="#">Гродно</a></li>
+                        <li><a href="#">Могилев</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Казахстан</li>
+                        <li><a href="#">Нур-султан</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div id="paid-vacancies"></div>
@@ -78,10 +103,10 @@
             const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior']
 
             for (const t of techtags) {
-                $('.tech-tags').append(`<input class="tech" type="button" onclick="app.handlers.setRequest(this.value, this.className);app.handlers.sendRequest()" value="${t}" />`)
+                $('.tech-tags').append(`<input class="tech" type="button" onclick="app.handlers.setRequest(this);app.handlers.sendRequest()" value="${t}" />`)
             }
             for (const t of typetags) {
-                $('.type-tags').append(`<input class="type" type="button" onclick="app.handlers.setRequest(this.value, this.className);app.handlers.sendRequest()" value="${t}" />`)
+                $('.type-tags').append(`<input class="type" type="button" onclick="app.handlers.setRequest(this);app.handlers.sendRequest()" value="${t}" />`)
             }
 
             app.handlers.addLoadButton({{ pages }})

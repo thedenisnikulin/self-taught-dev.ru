@@ -45,7 +45,14 @@ let app = {
             })
         },
         // set app.state.request. Used for setting tags
-        setRequest: (value, className) => {
+        setRequest: (el) => {
+            let value = el.value
+            let className = el.className
+            if (!app.handlers.isTagActive(value)) {
+                el.style.backgroundColor = "#83EF86"
+            } else {
+                el.style.backgroundColor = className === 'tech' ? '#E27781' : '#6573A0'
+            }
             if (className === 'type') {
                 if (app.state.request.tags.type.includes(value)) {
                     // if value is already chosen, then delete it
@@ -70,13 +77,19 @@ let app = {
             for (let j=0; j<jobs.length; j++) {
                 app.state.vacancies.push(
                     `<div class="vacancy">
-                        <p class="name">${jobs[j].name}<\p>
-                        <p class="employer">${jobs[j].employer}<\p>
-                        <p class="city">${jobs[j].city}<\p>
-                        <p class="tags">${jobs[j].tags.type.concat(jobs[j].tags.tech)}<\p>
-                        <p class="url">${jobs[j].url}<\p>
-                        <p class="date">${jobs[j].date}<\p>
-                    <\div>`
+                        <div class="v-start-container">
+                            <img class="employer-logo" src="${jobs[j].employer_logo}"></img>
+                            <div class='v-mid-container'>
+                                <p class="name">${jobs[j].name}</p>
+                                <p class="employer-date">${jobs[j].employer}, ${jobs[j].date}</p>
+                                <p class="v-tags">${jobs[j].tags.type.concat(jobs[j].tags.tech)}</p>
+                            </div>
+                        </div>
+                        <div class="v-end-container">
+                            <p class="city">${jobs[j].city}</p>
+                            <button class="respond-btn" onclick="window.open('${jobs[j].url}','_blank')">Откликнуться</button>
+                        </div>
+                    </div>`
                 )
                 document.getElementById("vacancies").innerHTML += app.state.vacancies[j]
             }
@@ -92,14 +105,20 @@ let app = {
             for (let j=0; j<jobs.length; j++) {
                 console.log(jobs[j].tags)
                 app.state.paidVacancies.push(
-                    `<div class="paid-vacancy">
-                        <p class="name">${jobs[j].name}<\p>
-                        <p class="employer">${jobs[j].employer}<\p>
-                        <p class="city">${jobs[j].city}<\p>
-                        <p class="tags">${jobs[j].tags.type.concat(jobs[j].tags.tech)}<\p>
-                        <p class="url">${jobs[j].url}<\p>
-                        <p class="date">${jobs[j].date}<\p>
-                    <\div>`
+                    `<div style='border: 3px #${jobs[j].color} solid' class="vacancy">
+                        <div class="v-start-container">
+                            <img class="employer-logo" src="${jobs[j].employer_logo}"></img>
+                            <div class='v-mid-container'>
+                                <p class="name">${jobs[j].name}</p>
+                                <p class="employer-date">${jobs[j].employer}, ${jobs[j].date}</p>
+                                <p class="v-tags">${jobs[j].tags.type.concat(jobs[j].tags.tech)}</p>
+                            </div>
+                        </div>
+                        <div class="v-end-container">
+                            <p class="city">${jobs[j].city}</p>
+                            <button class="respond-btn" onclick="window.open('${jobs[j].url}','_blank')">Откликнуться</button>
+                        </div>
+                    </div>`
                 )
                 document.getElementById("paid-vacancies").innerHTML += app.state.paidVacancies[j]
             }
@@ -120,6 +139,12 @@ let app = {
                 console.log('remove')
                 $('#loadbtn').remove()
             }
+        },
+        isTagActive: (value) => {
+            if (app.state.request.tags.tech.includes(value) || app.state.request.tags.type.includes(value)) {
+                return true
+            }
+            return false
         }
     }
 }

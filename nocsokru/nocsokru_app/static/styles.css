@@ -1,4 +1,270 @@
 .dropdown-menu {
     height:40rem;
     overflow-y:auto;
-   }
+}
+
+body {
+    background-color: #282A35;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.logo {
+    font-size: 30px;
+    color: #6573A0
+}
+
+.excl {
+    color: #E27781
+}
+
+.ncsdgr {
+    color: #ffffff
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 2.5rem 5.5rem;
+    align-items: center;
+}
+
+.publish-btn {
+    padding: 3px 2rem;
+    background-color: #F5BA78;
+    color: #000000;
+    border: none;
+    font-size: 17px
+}
+
+.publish-btn:hover {
+    background-color: #eecaa0;
+}
+
+.publish-btn:active {
+    background-color: #F5BA78;
+}
+
+
+.big-text {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 8rem 13rem;
+}
+
+.big-title-left {
+    color: #83EF86;
+    /* font-size: 40px;
+    line-height: 4rem; */
+    font-size: 40px;
+    line-height: 3rem;
+}
+
+.big-title-right {
+    color: #EA80BF;
+    /* font-size: 50px;
+    line-height: 5rem; */
+    font-size: 40px;
+    line-height: 4rem;
+    text-align: right;
+}
+
+.small-title-left {
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 3rem;
+    margin: 0 0 0 2rem;
+}
+
+.small-title-right {
+    color: #F5BA78;
+    font-size: 16px;
+    line-height: 1.5rem;
+    text-align: right;
+}
+
+.tags {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: #1A1C23;
+    padding: 3rem;
+    margin: 0 0 7rem 0;
+    height: 25rem;
+    text-align: center;
+}
+
+.tech-tags-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.tech-tags {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 14rem;
+    width: 22rem;
+}
+
+.type-tags-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.type-tags {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.city-tags {
+    margin: 5rem 0 0 0;
+    justify-self: center;
+}
+
+.tags-text {
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.tech {
+    background-color: #E27781;
+    font-size: 16px;
+    padding: 3px 2rem;
+    color: #000000;
+    border: none;
+    margin: 1px;
+    width: 120px;
+}
+
+.type {
+    background-color: #6573A0;
+    font-size: 16px;
+    padding: 3px 2rem;
+    color: #000000;
+    border: none;
+    margin: 1px;
+    width: 120px;
+}
+
+.vacancy {
+    background-color: #1A1C23;
+    margin: 0 auto 2rem auto;
+    height: 12rem;
+    width: 90rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.v-start-container {
+    color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.v-mid-container {
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.v-end-container {
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-right: 3rem;
+    align-items: flex-end;
+}
+
+.city {
+    text-align: end;
+    font-size: 20px;
+}
+
+.respond-btn {
+    margin-top: 3rem;
+    padding: 3px 2rem;
+    background-color: #83EF86;
+    color: #000000;
+    border: none;
+}
+
+.respond-btn:hover {
+    background-color: rgb(198, 230, 199);
+}
+
+.respond-btn:active {
+    background-color: #83EF86;
+}
+
+.employer-logo {
+    height: 6rem;
+    width: 6rem;
+    margin: 2.5rem;
+    border-radius: 50%;
+}
+
+.name {
+    font-size: 20px;
+    margin: 0;
+}
+
+#loadbtn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 5rem;
+}
+
+#loadbtn {
+    background-color: #EA80BF;
+    padding: 3px 2rem;
+    font-size: 17px;
+    color: #000000;
+    border: none;
+}
+
+#loadbtn:hover {
+    background-color: #e4a7cb;
+}
+
+#loadbtn:active {
+    background-color: #EA80BF;
+}
+
+.footer {
+    width: 100%;
+    height: 20rem;
+    background-color: #1A1C23;
+}
+
+.btn-default {
+    background-color: #282A35;
+    color: #ffffff;
+    border: 1px #ffffff solid;
+}
+
+.btn-default:hover {
+    background-color: #313441;
+    color: #ffffff;
+    border: 1px #ffffff solid;
+}
+
+.dropdown-menu {
+    background-color: #282A35;
+}
+
+.dropdown-menu>li>a {
+    color: #ffffff;
+}
+
+.dropdown-header {
+    color: #6573A0;
+}

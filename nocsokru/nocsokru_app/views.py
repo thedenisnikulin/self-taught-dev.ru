@@ -40,11 +40,10 @@ def load_jobs(req: HttpRequest):
         tags_list.extend(tags['tech'])
         tags_list.extend(tags['type'])
         tags_list = [t.lower() for t in tags_list]
-        print(tags_list)
         for v in PaidVacancy.objects.all():
-            # iterates through dict, but tech&type lists are needed
             for tag in json.loads(v.tags.lower()).values():
-                if any(t in tag for t in tags_list):
+                print(tag)
+                if any(t in tag for t in tags_list) or v.city == tags['city']:
                     paid_vacancies.append(v.serialize())
                     break
         print(len(paid_vacancies))
