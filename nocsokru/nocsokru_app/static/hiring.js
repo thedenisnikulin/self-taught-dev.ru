@@ -30,7 +30,19 @@ let hiring = {
         },
         handleChange: (el) => {
             const { value, name } = el;
+            console.log(el.id)
             hiring.state.job = { ...hiring.state.job, [name]: value };
+            console.log(name)
+            if (name === "employer_logo") {
+                $('.employer_logo').attr('src', value)
+            } else if (name === 'color') {
+                let v = value.startsWith('#') ? value : `#${value}`
+                $('.vacancy').attr('style', `border: 3px ${v} solid`)
+            } else if (name === 'url') {
+                $('.respond-btn').attr('onclick', `window.open('${value}', '_blank')`)
+            } else {
+                $(`.${name}`).html(value)
+            }
         },
         openBill: (payUrl) => {
            params = {
@@ -59,11 +71,24 @@ let hiring = {
                         utils.sendRequest('/jobs/create', 'POST', JSON.stringify(hiring.state.job), {
                             success: (response) => {
                                 console.log('created')
+                                localStorage.removeItem('nocsdegreeru.hashedjob')
                             }
                         })
                     }
                 }
             })
+        },
+        switchToEditor: () => {
+            $('.generate-by-link-container').remove()
+            $(".main-container").append(components.vacancyEditor)
+            
+        },
+        switchToGenerator: () => {
+            $('.editor-container').remove()
+            $('.main-container').append(components.generatorVacancyByLink)
+        },
+        generateVacancyOnLink: (link) => {
+
         }
     }
 }

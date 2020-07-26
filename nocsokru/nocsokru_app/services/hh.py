@@ -15,7 +15,7 @@ job_tag_aliases = {
         'python': ['python'],
         'java': ['java ', 'java/', 'java-', 'java,'],  # those symbols at the end are important not to get JS jobs
         'javascript': ['javascript', 'js'],
-        'c#': ['c#', 'с#'],     # some employers use cyrillic 'c', so double check
+        'c#': ['c#', 'с#', '.net'],     # some employers use cyrillic 'c', so double check
         'c++': ['c++', 'с++'],  # yet another 'c' double check
         'go': ['go', 'golang'],
         'php': ['php']

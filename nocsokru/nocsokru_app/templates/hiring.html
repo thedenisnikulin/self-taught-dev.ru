@@ -5,32 +5,99 @@
         {% csrf_token  %}
         {% load static %}
         <title>Hiring</title>
+        <!-- jquery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <!-- qiwi popups -->
         <script src='https://oplata.qiwi.com/popup/v1.js'></script>
+        <!-- selectize-js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha512-hgoywpb1bcTi1B5kKwogCTG4cvTzDmFCJZWjit4ZimDIgXu7Dwsreq8GOQjKVUxFwxCWkLcJN5EN0W0aOngs4g==" crossorigin="anonymous"></script>        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha512-nATinx3+kN7dKuXEB0XLIpTd7j8QahdyJjE24jTJf4HASidUCFFN/TkSVn3CifGmWwfC2mO/VmFQ6hRn2IcAwg==" crossorigin="anonymous" />
         <!--load static files-->
-        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <link rel="stylesheet" href="{% static 'hiring.css' %}">
         <script src="{% static 'hiring.js' %}"></script>
         <script src="{% static 'utils.js' %}"></script>
+        <script src="{% static 'components.js' %}"></script>
     </head>
     <body>
         <div class="header">
-            <button onclick="location.href='{% url 'index' %}'">Вернуться на главную</button>
+            <p class="logo">{<span class='excl'>!</span><span class="ncsdgr">csdegree</span>}</p>
+            <button class="back-btn" onclick="location.href='{% url 'index' %}'">Вернуться на главную</button>
         </div>
-        <form onsubmit="return hiring.handlers.handleSubmit()">
-<!--            TODO add proper tag selection-->
-            <input name="name" onchange="hiring.handlers.handleChange(this)">
-            <input name="employer" onchange="hiring.handlers.handleChange(this)">
-            <input name="employer_logo" onchange="hiring.handlers.handleChange(this)">
-            <input name="city" onchange="hiring.handlers.handleChange(this)">
-            <input name="tags" onchange="hiring.handlers.handleChange(this)">
-            <input name="url" onchange="hiring.handlers.handleChange(this)">
-            <input name="date" onchange="hiring.handlers.handleChange(this)">
-            <input type="submit">
-        </form>
+        <div class="big-text">
+            <div class="title-container">
+                <p class="big-title">Разработчики найдут вас сами</p>
+                <p class="small-title">Просто разместите свою вакансию у нас на сайте</p>
+            </div>
+        </div>
+        <div class="main-container">
+            <div class='generate-by-link-container'>
+                <div class='vacancy'>
+                    <div style="border: 3px #EA80BF solid" class="vacancy">
+                        <div class="v-start-container">
+                            <img class="employer_logo" src="/static/nophoto.png"></img>
+                            <div class='v-mid-container'>
+                                <p class="name">Название должности</p>
+                                <p class="employer-date">Название вашей компании, 2020-07-26</p>
+                                <div class="v-tags">
+                                    <div class="v-type">frontend</div>
+                                    <div class="v-tech">javascript</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="v-end-container">
+                            <p class="city">Город</p>
+                            <button class="respond-btn" onclick="window.open('https://www.google.com', '_blank')">Ссылка на сайт</button>
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="gen-content">
+                    <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
+                    <form class='gen-form'>
+                        <input class="hhru-link" name="hhru-link" onchange="">
+                        <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
+                    </form>
+                    <p class='gen-text gi'>или</p>
+                    <button class="fill-in-btn" onclick="hiring.handlers.switchToEditor()">Заполнить самостоятельно</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer"></div>
         <script>
             utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            $('.city-to-replace').replaceWith(components.cityDropdownMenu())
+
+            // handle dropdown-menu logic
+            $(".dropdown-menu a").on('click', function(e) {
+                e.preventDefault();
+                let city = $(this).text();
+                document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
+                document.getElementsByClassName('city')[0].innerHTML = city;
+                // request object is from static/script.js
+                hiring.state.job.city = city
+            })
+            $(document).ready(() => {
+                $(document).on('click', '.fill-in-btn', (e) => {
+                    e.preventDefault();
+                    console.log('clicked')
+                    $('.tags-editor').selectize({
+                        plugins: ['restore_on_backspace', 'remove_button'],
+                        options: ['hey', 'lol'],
+                        delimiter: ',',
+                        persist: false,
+                        create: function(input) {
+                            return {
+                                value: input,
+                                text: input
+                            }
+                        }
+                    });
+                })    
+            })
+                   
         </script>
     </body>
 </html>

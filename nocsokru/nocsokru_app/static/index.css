@@ -82,6 +82,7 @@ body {
     font-size: 16px;
     line-height: 1.5rem;
     text-align: right;
+    margin-bottom: 0;
 }
 
 .tags {
@@ -105,7 +106,7 @@ body {
     flex-direction: column;
     flex-wrap: wrap;
     height: 14rem;
-    width: 22rem;
+    width: 24.5rem;
 }
 
 .type-tags-container {
@@ -181,6 +182,32 @@ body {
     justify-content: space-between;
     margin-right: 3rem;
     align-items: flex-end;
+}
+
+.v-tags {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0 0 0;
+}
+
+.v-tech {
+    background-color: #E27781;
+    font-size: 14px;
+    padding: 2px 1.4rem;
+    color: #000000;
+    margin: 1px;
+    width: 120px;
+    text-align: center;
+}
+
+.v-type {
+    background-color: #6573A0;
+    font-size: 14px;
+    padding: 2px 1.4rem;
+    color: #000000;
+    margin: 1px;
+    width: 120px;
+    text-align: center;
 }
 
 .city {

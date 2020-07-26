@@ -8,9 +8,11 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
         <!--load static files-->
-        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <link rel="stylesheet" href="{% static 'index.css' %}">
         <script src="{% static 'index.js' %}"></script>
+        <script src="{% static 'hiring.js' %}"></script>
         <script src="{% static 'utils.js' %}"></script>
+        <script src="{% static 'components.js' %}"></script>
     </head>
     <body>
         <div class="header">
@@ -42,63 +44,17 @@
                 <div class="type-tags"></div>
             </div>
             <div class="city-tags-container">
-                <p class="tags-text">Город</p>
-                <div class="city-tags dropdown">
-                    <button id="dd-button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Выберите город
-                    <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header">Россия</li>
-                        <li><a href="#">Москва</a></li>
-                        <li><a href="#">Санкт-Петербург</a></li>
-                        <li><a href="#">Владивосток</a></li>
-                        <li><a href="#">Волгоград</a></li>
-                        <li><a href="#">Воронеж</a></li>
-                        <li><a href="#">Екатеринбург</a></li>
-                        <li><a href="#">Казань</a></li>
-                        <li><a href="#">Калуга</a></li>
-                        <li><a href="#">Краснодар</a></li>
-                        <li><a href="#">Красноярск</a></li>
-                        <li><a href="#">Кемерово</a></li>
-                        <li><a href="#">Нижний Новгород</a></li>
-                        <li><a href="#">Новосибирск</a></li>
-                        <li><a href="#">Ростов-на-Дону</a></li>
-                        <li><a href="#">Самара</a></li>
-                        <li><a href="#">Саратов</a></li>
-                        <li><a href="#">Сочи</a></li>
-                        <li><a href="#">Уфа</a></li>
-                        <li><a href="#">Ярославль</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Украина</li>
-                        <li><a href="#">Киев</a></li>
-                        <li><a href="#">Днепр</a></li>
-                        <li><a href="#">Львов</a></li>
-                        <li><a href="#">Одесса</a></li>
-                        <li><a href="#">Харьков</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Беларусь</li>
-                        <li><a href="#">Минск</a></li>
-                        <li><a href="#">Брест</a></li>
-                        <li><a href="#">Витебск</a></li>
-                        <li><a href="#">Гомель</a></li>
-                        <li><a href="#">Гродно</a></li>
-                        <li><a href="#">Могилев</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Казахстан</li>
-                        <li><a href="#">Нур-султан</a></li>
-                    </ul>
-                </div>
-            </div>
+                <p class="tags-text">Город</p></div>
         </div>
         <div id="paid-vacancies"></div>
         <div id="vacancies"></div>
         <div id="loadbtn-container"></div>
-        <div class="pagination"></div>
         <div class="footer"></div>
 
         <script type="text/javascript">
             // see static/index.js for more information
 
-            // map tags
+            // add tags
             const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP']
             const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior']
 
@@ -109,12 +65,22 @@
                 $('.type-tags').append(`<input class="type" type="button" onclick="app.handlers.setRequest(this);app.handlers.sendRequest()" value="${t}" />`)
             }
 
+            // add city tags
+            $('.city-tags-container').append(components.cityDropdownMenu())
+
             app.handlers.addLoadButton({{ pages }})
 
             // set initial vacancies and csrf token
             app.handlers.setPaidVacancies({{ paid|safe }});
             app.handlers.setVacancies({{ jobs|safe }})
             utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+            {
+                let billId = localStorage.getItem('nocsdegreeru.hashedjob')
+                if (billId !== null) {
+                    hiring.handlers.verifyBill(billId)
+                }
+            }
 
             // handle dropdown-menu logic
                 $(".dropdown-menu a").on('click', function(e) {
