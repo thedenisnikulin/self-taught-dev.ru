@@ -67,6 +67,32 @@ def get_hh_jobs(tags=None , page: int = 1) -> Tuple[list, int]:
     return jobs, pages
 
 
+def get_hh_job(link: str) -> dict:
+    job_id = link.split('/')[-1]
+    job = {}
+    with request.urlopen(f'{url}/vacancies/{job_id}') as response:
+        data = response.read()
+        job = json.loads(data)
+    try:
+        job_requirements = job['snippet']['requirement']
+    except KeyError:
+        job_requirements = ''
+    type_tags = set([tag for tag, aliases in job_tag_aliases['type'].items()
+                     for alias in aliases if alias in (job['name'] + job_requirements).lower()])
+    tech_tags = set([tag for tag, aliases in job_tag_aliases['tech'].items()
+                     for alias in aliases if alias in (job['name'] + job_requirements).lower()])
+    return {
+        'name': job['name'],
+        'employer': job['employer']['name'],
+        'employer_logo': job['employer']['logo_urls']['original'] if job['employer'][
+                                                                   'logo_urls'] is not None else '/static/nophoto.png',
+        'city': job['area']['name'],
+        'tags': {'type': list(type_tags), 'tech': list(tech_tags)},  # back to list to make JSON serialization easier
+        'url': job['alternate_url'],
+        'date': job['published_at'][:10],
+    }
+
+
 def without_degree(jobs: list):
     no_degree_jobs = []
     avoid = ['высшее', 'образование', 'вуз', 'профильное', 'студент']
@@ -97,7 +123,7 @@ def prepare_jobs(jobs: list):
         prepared_jobs.append({
             'name': job['name'],
             'employer': job['employer']['name'],
-            'employer_logo': job['employer']['logo_urls']['90'] if job['employer']['logo_urls'] is not None else '/static/nophoto.png',
+            'employer_logo': job['employer']['logo_urls']['original'] if job['employer']['logo_urls'] is not None else '/static/nophoto.png',
             'city': job['area']['name'],
             'tags': {'type': list(type_tags), 'tech': list(tech_tags)}, # back to list to make JSON serialization easier
             'url': job['alternate_url'],

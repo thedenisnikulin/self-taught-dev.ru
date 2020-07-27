@@ -47,37 +47,34 @@ const components = {
         </div>`},
         hiringTagsDropdown: ``,
         generatorVacancyByLink: `
-            <div class='generate-by-link-container'>
-                    <div class='vacancy'>
-                        <div style="border: 3px #EA80BF solid" class="vacancy">
-                            <div class="v-start-container">
-                                <img class="employer_logo" src="/static/nophoto.png"></img>
-                                <div class='v-mid-container'>
-                                    <p class="name">Название должности</p>
-                                    <p class="employer-date">Название вашей компании, 2020-07-26</p>
-                                    <div class="v-tags">
-                                        <div class="v-type">frontend</div>
-                                        <div class="v-tech">javascript</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="v-end-container">
-                                <p class="city">Город</p>
-                                <button class="respond-btn" onclick="window.open('https://www.google.com', '_blank')">Ссылка на сайт</button>
-                            </div>
+        <div class='generate-by-link-container'>
+            <div class='vacancy'>
+                <div style="border: 3px #EA80BF solid" class="vacancy">
+                    <div class="v-start-container">
+                        <img class="employer_logo" src="/static/nophoto.png"></img>
+                        <div class='v-mid-container'>
+                            <p class="name">Название должности</p>
+                            <div><span class="employer">Название вашей компании</span><span>, </span><span class='date'>2020-07-26</span></div>
+                            <div class="v-tags"></div>
                         </div>
-        
                     </div>
-                    <div class="gen-content">
-                        <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
-                        <form class='gen-form'>
-                            <input class="hhru-link" name="hhru-link" onchange="">
-                            <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
-                        </form>
-                        <p class='gen-text gi'>или</p>
-                        <button class="fill-in-btn" onclick='hiring.handlers.switchToEditor()'>Заполнить самостоятельно</button>
+                    <div class="v-end-container">
+                        <p class="city">Город</p>
+                        <button class="respond-btn" onclick="window.open('https://www.google.com', '_blank')">Ссылка на сайт</button>
                     </div>
                 </div>
+
+            </div>
+            <div class="gen-content">
+                <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
+                <form class='gen-form' onsubmit="return hiring.handlers.requestJobByLink()">
+                    <input class="hhru-link" name="hhru-link" onchange="hiring.state.jobLink = this.value">
+                    <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
+                </form>
+                <p class='gen-text gi'>или</p>
+                <button class="fill-in-btn" onclick="hiring.handlers.switchToEditor()">Заполнить самостоятельно</button>
+            </div>
+        </div>
         `,
         vacancyEditor: `
         <div class="editor-container">
@@ -87,11 +84,8 @@ const components = {
                     <img class="employer_logo" src="/static/nophoto.png"></img>
                     <div class='v-mid-container'>
                         <p class="name">Название должности</p>
-                        <div><span class="employer">Название вашей компании</span><span class='date'>, 2020-07-26</span></div>
-                        <div class="v-tags">
-                            <div class="v-type">frontend</div>
-                            <div class="v-tech">javascript</div>
-                        </div>
+                        <div><span class="employer">Название вашей компании</span><span>, </span><span class='date'>2020-07-26</span></div>
+                        <div class="v-tags"></div>
                     </div>
                 </div>
                 <div class="v-end-container">

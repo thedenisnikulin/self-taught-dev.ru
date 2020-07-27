@@ -40,11 +40,8 @@
                             <img class="employer_logo" src="/static/nophoto.png"></img>
                             <div class='v-mid-container'>
                                 <p class="name">Название должности</p>
-                                <p class="employer-date">Название вашей компании, 2020-07-26</p>
-                                <div class="v-tags">
-                                    <div class="v-type">frontend</div>
-                                    <div class="v-tech">javascript</div>
-                                </div>
+                                <div><span class="employer">Название вашей компании</span><span>, </span><span class='date'>2020-07-26</span></div>
+                                <div class="v-tags"></div>
                             </div>
                         </div>
                         <div class="v-end-container">
@@ -56,8 +53,8 @@
                 </div>
                 <div class="gen-content">
                     <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
-                    <form class='gen-form'>
-                        <input class="hhru-link" name="hhru-link" onchange="">
+                    <form class='gen-form' onsubmit="return hiring.handlers.requestJobByLink()">
+                        <input class="hhru-link" name="hhru-link" onchange="hiring.state.jobLink = this.value">
                         <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
                     </form>
                     <p class='gen-text gi'>или</p>
@@ -68,32 +65,49 @@
         <div class="footer"></div>
         <script>
             utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-            $('.city-to-replace').replaceWith(components.cityDropdownMenu())
-
-            // handle dropdown-menu logic
-            $(".dropdown-menu a").on('click', function(e) {
-                e.preventDefault();
-                let city = $(this).text();
-                document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
-                document.getElementsByClassName('city')[0].innerHTML = city;
-                // request object is from static/script.js
-                hiring.state.job.city = city
-            })
+            
             $(document).ready(() => {
                 $(document).on('click', '.fill-in-btn', (e) => {
                     e.preventDefault();
-                    console.log('clicked')
+                    $('.city-to-replace').replaceWith(components.cityDropdownMenu())
+                    // handle dropdown-menu logic
+                    $(".dropdown-menu a").on('click', function(e) {
+                        e.preventDefault();
+                        let city = $(this).text();
+                        document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
+                        document.getElementsByClassName('city')[0].innerHTML = city;
+                        // request object is from static/script.js
+                        hiring.state.job.tags.city = city
+                    });
                     $('.tags-editor').selectize({
-                        plugins: ['restore_on_backspace', 'remove_button'],
-                        options: ['hey', 'lol'],
+                        labelField: 'name',
+                        optgroupField: 'tag',
+                        plugins: ['remove_button'],
+                        options: [
+                            {value: 'fullstack', tag: 'type', name: 'Fullstack'},
+                            {value: 'frontend', tag: 'type', name: 'Frontend'},
+                            {value: 'backend', tag: 'type', name: 'Backend'},
+                            {value: 'mobile', tag: 'type', name: 'Mobile'},
+                            {value: 'junior', tag: 'type', name: 'Junior'},
+                            {value: 'python', tag: 'tech', name: 'Python'},
+                            {value: 'java', tag: 'tech', name: 'Java'},
+                            {value: 'javascript', tag: 'tech', name: 'JavaScript'},
+                            {value: 'c#', tag: 'tech', name: 'C#'},
+                            {value: 'c++', tag: 'tech', name: 'C++'},
+                            {value: 'go', tag: 'tech', name: 'Go'},
+                            {value: 'php', tag: 'tech', name: 'PHP'},
+                        ],
+                        optgroups: [
+                            {value: 'type', label: 'Тип'},
+                            {value: 'tech', label: 'Технологии'}
+                        ],
+                        maxItems: 5,
+                        searchField: ['name', 'tag'],
+                        onItemAdd: hiring.handlers.addTag,
+                        onItemRemove: hiring.handlers.removeTag,
                         delimiter: ',',
                         persist: false,
-                        create: function(input) {
-                            return {
-                                value: input,
-                                text: input
-                            }
-                        }
+                        render: (item) => item.name
                     });
                 })    
             })

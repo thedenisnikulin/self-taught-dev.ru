@@ -4,11 +4,15 @@ let hiring = {
             name: '',
             employer: '',
             employer_logo: '',
-            city: '',
-            tags: [],
+            tags: {
+                tech: [],
+                type: [],
+                city: '',
+            },
             url: '',
             date: ''
-        }
+        },
+        jobLink: ''
     },
     handlers: {
         handleSubmit: () => {
@@ -30,7 +34,6 @@ let hiring = {
         },
         handleChange: (el) => {
             const { value, name } = el;
-            console.log(el.id)
             hiring.state.job = { ...hiring.state.job, [name]: value };
             console.log(name)
             if (name === "employer_logo") {
@@ -43,6 +46,7 @@ let hiring = {
             } else {
                 $(`.${name}`).html(value)
             }
+            console.log(hiring.state.job)
         },
         openBill: (payUrl) => {
            params = {
@@ -87,8 +91,51 @@ let hiring = {
             $('.editor-container').remove()
             $('.main-container').append(components.generatorVacancyByLink)
         },
-        generateVacancyOnLink: (link) => {
-
+        requestJobByLink: () => {
+            utils.sendRequest('/jobs/generate', 'POST', JSON.stringify({jobLink: hiring.state.jobLink}), {
+                success: (response) => {
+                    $('.v-tags').html('')
+                    hiring.state.job = response.job
+                    console.log(response.job.date)
+                    for(const [key, value] of Object.entries(hiring.state.job)) {
+                        hiring.handlers.handleChange({name: key, value: value})
+                    }
+                    for (const t of hiring.state.job.tags.type) {
+                        $('.v-tags').append(`<div class="v-type">${t}</div>`)
+                    } 
+                    for (const t of hiring.state.job.tags.tech) {
+                        $('.v-tags').append(`<div class="v-tech">${t}</div>`)
+                    }
+                }
+            })
+            return false;
+        },
+        addTag: (value) => {
+            const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP'].map(i => i.toLowerCase())
+            const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
+            let tagtype;
+            if (techtags.includes(value)) {
+                hiring.state.job.tags.tech.push(value)
+                tagtype = 'tech'
+            } else {
+                hiring.state.job.tags.type.push(value)
+                tagtype = 'type'
+            };
+            $('.v-tags').append(`<div class="v-${tagtype}">${value}</div>`)
+        },
+        removeTag: (value) => {
+            const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP'].map(i => i.toLowerCase())
+            const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
+            let tags = '';
+            hiring.state.job.tags.tech = hiring.state.job.tags.tech.filter(t => t !== value)
+            hiring.state.job.tags.type = hiring.state.job.tags.type.filter(t => t !== value)
+            for(const t of hiring.state.job.tags.type) {
+                tags += `<div class="v-type">${t}</div>`
+            }
+            for(const t of hiring.state.job.tags.tech) {
+                tags += `<div class="v-tech">${t}</div>`
+            }
+            $('.v-tags').html(tags)
         }
     }
 }

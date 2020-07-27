@@ -269,3 +269,7 @@ body {
 .dropdown-header {
     color: #6573A0;
 }
+
+.tags-editor {
+    width: 30rem;
+}

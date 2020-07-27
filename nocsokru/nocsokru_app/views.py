@@ -5,16 +5,16 @@ from urllib import request, parse
 import json
 import hashlib
 # local
-from .services.hh import get_hh_jobs, without_degree, prepare_jobs
+from .services import hh
 from .services import qiwi_api_managment as qiwi_api
 from .models import PaidVacancy
 
 
 def index(req: HttpRequest):
     if req.method == 'GET':
-        jobs, pages = get_hh_jobs()
-        jobs = without_degree(jobs)
-        jobs = prepare_jobs(jobs)
+        jobs, pages = hh.get_hh_jobs()
+        jobs = hh.without_degree(jobs)
+        jobs = hh.prepare_jobs(jobs)
         paid_vacancies = []
         for v in PaidVacancy.objects.all():
             paid_vacancies.append(v.serialize())
@@ -29,11 +29,11 @@ def load_jobs(req: HttpRequest):
         tags = req_body['tags']
         page = req_body['page']
         # get jobs by hhru api
-        jobs, pages = get_hh_jobs(tags, page)
+        jobs, pages = hh.get_hh_jobs(tags, page)
         # we need only jobs that don't require a degree
-        jobs = without_degree(jobs)
+        jobs = hh.without_degree(jobs)
         # make jobs look prettier
-        jobs = prepare_jobs(jobs)
+        jobs = hh.prepare_jobs(jobs)
         # prepare paid vacancies
         paid_vacancies = []
         tags_list = []
@@ -65,6 +65,14 @@ def verify_bill(req: HttpRequest):
         print(bill_id)
         is_paid = qiwi_api.is_paid(bill_id)
         return HttpResponse(json.dumps({'isPaid': is_paid}))
+
+
+def get_job_by_link(req: HttpRequest):
+    if req.method == "POST":
+        req_body = json.loads(req.body.decode('utf-8'))
+        job_link = req_body['jobLink']
+        job = hh.get_hh_job(job_link)
+        return HttpResponse(json.dumps({'job': job}))
 
 
 def create_job(req: HttpRequest):
