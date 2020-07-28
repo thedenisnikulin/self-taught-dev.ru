@@ -49,7 +49,7 @@ const components = {
         generatorVacancyByLink: `
         <div class='generate-by-link-container'>
             <div class='vacancy'>
-                <div style="border: 3px #EA80BF solid" class="vacancy">
+                <div style="border: 3px #F5BA78 solid" class="vacancy">
                     <div class="v-start-container">
                         <img class="employer_logo" src="/static/nophoto.png"></img>
                         <div class='v-mid-container'>
@@ -79,7 +79,7 @@ const components = {
         vacancyEditor: `
         <div class="editor-container">
             <p>Редактор вакансии</p>
-            <div style="border: 3px #EA80BF solid" class="vacancy">
+            <div style="border: 3px #F5BA78 solid" class="vacancy">
                 <div class="v-start-container">
                     <img class="employer_logo" src="/static/nophoto.png"></img>
                     <div class='v-mid-container'>
@@ -104,12 +104,38 @@ const components = {
                         <input placeholder='url' name="url" onchange="hiring.handlers.handleChange(this)">
                     </div>
                     <input type="text" class='tags-editor'>
-                    <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
+                    <input onclick="hiring.handlers.switchToPayment()" type="submit" class="gen-btn gi" value="Продолжить">
                 </form>
                 <p class='gen-text gi'>или</p>
                 <button class="fill-in-btn" onclick="hiring.handlers.switchToGenerator()">Заполнить по ссылке</button>
             </div>
         </div>
         `,
+        /*html*/
+        paymentComponent: () => `
+        <div class='payment-container'>
+            <p>Вакансия готова к размещению!</p>
+            <div class='vacancy'>
+                <div style="border: 3px ${hiring.state.job.color} solid" class="vacancy">
+                    <div class="v-start-container">
+                        <img class="employer_logo" src="${hiring.state.job.employer_logo}"></img>
+                        <div class='v-mid-container'>
+                            <p class="name">${hiring.state.job.name}</p>
+                            <div><span class="employer">${hiring.state.job.employer}</span><span>, </span><span class='date'${hiring.state.job.date}</span></div>
+                            <div class="v-tags"></div>
+                        </div>
+                    </div>
+                    <div class="v-end-container">
+                        <p class="city">${hiring.state.job.tags.city}</p>
+                        <button class="respond-btn" onclick="window.open('${hiring.state.job.url}, '_blank')">Ссылка на сайт</button>
+                    </div>
+                </div>
 
+            </div>
+            <div class="pay-btn-container">
+                <button class="pay-btn" onclick="hiring.handlers.requestPayment()">Оплатить</button>
+                <p>Стоимость услуги: 300 рублей</p>
+            </div>
+        </div>
+        `,
 }

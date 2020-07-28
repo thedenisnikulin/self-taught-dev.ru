@@ -82,10 +82,11 @@ def create_job(req: HttpRequest):
             name=req_body['name'],
             employer=req_body['employer'],
             employer_logo=req_body['employer_logo'],
-            city=req_body['city'],
-            tags=json.dumps(req_body['tags']),
+            city=req_body['tags']['city'],
+            tags=json.dumps({'tech': req_body['tags']['tech'], 'type': req_body['tags']['type']}),
             url=req_body['url'],
             date=req_body['date'],
             color='#FFFFFF'
         )
         new_vacancy.save()
+        return HttpResponse()

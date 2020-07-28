@@ -114,7 +114,7 @@ let app = {
             for (let j=0; j<jobs.length; j++) {
                 let vac = '' 
                 vac += `
-                <div style="border: 3px #${jobs[j].color} solid" class="vacancy">
+                <div style="border: 3px ${jobs[j].color} solid" class="vacancy">
                     <div class="v-start-container">
                         <img class="employer-logo" src="${jobs[j].employer_logo}"></img>
                         <div class='v-mid-container'>

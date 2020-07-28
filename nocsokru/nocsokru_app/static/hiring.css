@@ -273,3 +273,36 @@ body {
 .tags-editor {
     width: 30rem;
 }
+
+.payment-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #282A35;
+    padding: 7rem 3rem;
+    margin: 0 0 7rem 0;
+    text-align: center;
+    color: #ffffff;
+    align-items: center;
+}
+
+.pay-btn {
+    margin: 3rem 0;
+    padding: 3px 2rem;
+    background-color: #83EF86;
+    color: #000000;
+    border: none;
+}
+
+.pay-btn:hover {
+    background-color: rgb(198, 230, 199);
+}
+
+.pay-btn:active {
+    background-color: #83EF86;
+}
+
+.pay-btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+}

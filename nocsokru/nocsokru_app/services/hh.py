@@ -86,8 +86,7 @@ def get_hh_job(link: str) -> dict:
         'employer': job['employer']['name'],
         'employer_logo': job['employer']['logo_urls']['original'] if job['employer'][
                                                                    'logo_urls'] is not None else '/static/nophoto.png',
-        'city': job['area']['name'],
-        'tags': {'type': list(type_tags), 'tech': list(tech_tags)},  # back to list to make JSON serialization easier
+        'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': job['area']['name']},  # back to list to make JSON serialization easier
         'url': job['alternate_url'],
         'date': job['published_at'][:10],
     }

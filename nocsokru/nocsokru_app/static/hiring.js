@@ -10,18 +10,14 @@ let hiring = {
                 city: '',
             },
             url: '',
-            date: ''
+            date: '',
+            color: '#F5BA78'
         },
         jobLink: ''
     },
     handlers: {
-        handleSubmit: () => {
+        requestPayment: () => {
             // TODO add time
-            utils.sendRequest('/jobs/create', 'POST', JSON.stringify(hiring.state.job), {
-                            success: (response) => {
-                                console.log('created')
-                            }
-                        })
             let hashedJob = utils.generateHash(JSON.stringify(hiring.state.job)).toString()
             localStorage.setItem('nocsdegreeru.hashedjob', hashedJob)
             utils.sendRequest('/bills/create', 'POST', hashedJob, {
@@ -35,12 +31,12 @@ let hiring = {
         handleChange: (el) => {
             const { value, name } = el;
             hiring.state.job = { ...hiring.state.job, [name]: value };
-            console.log(name)
             if (name === "employer_logo") {
                 $('.employer_logo').attr('src', value)
             } else if (name === 'color') {
                 let v = value.startsWith('#') ? value : `#${value}`
                 $('.vacancy').attr('style', `border: 3px ${v} solid`)
+                hiring.state.job.color = v;
             } else if (name === 'url') {
                 $('.respond-btn').attr('onclick', `window.open('${value}', '_blank')`)
             } else {
@@ -85,18 +81,27 @@ let hiring = {
         switchToEditor: () => {
             $('.generate-by-link-container').remove()
             $(".main-container").append(components.vacancyEditor)
-            
         },
         switchToGenerator: () => {
-            $('.editor-container').remove()
             $('.main-container').append(components.generatorVacancyByLink)
+        },
+        switchToPayment: () => {
+            $('.generate-by-link-container').remove()
+            $('.editor-container').remove()
+            $('.main-container').append(components.paymentComponent())
+            for (const t of hiring.state.job.tags.type) {
+                $('.v-tags').append(`<div class="v-type">${t}</div>`)
+            } 
+            for (const t of hiring.state.job.tags.tech) {
+                $('.v-tags').append(`<div class="v-tech">${t}</div>`)
+            }
         },
         requestJobByLink: () => {
             utils.sendRequest('/jobs/generate', 'POST', JSON.stringify({jobLink: hiring.state.jobLink}), {
                 success: (response) => {
                     $('.v-tags').html('')
                     hiring.state.job = response.job
-                    console.log(response.job.date)
+                    console.log(response.job)
                     for(const [key, value] of Object.entries(hiring.state.job)) {
                         hiring.handlers.handleChange({name: key, value: value})
                     }
@@ -106,8 +111,11 @@ let hiring = {
                     for (const t of hiring.state.job.tags.tech) {
                         $('.v-tags').append(`<div class="v-tech">${t}</div>`)
                     }
+                    $('.city').html(hiring.state.job.tags.city)
+                    hiring.state.job.color = '#F5BA78';
                 }
-            })
+            });
+            $('.gen-content').html("<button onclick='hiring.handlers.switchToPayment()' class='gen-btn gi'>Продолжить</button>")
             return false;
         },
         addTag: (value) => {
