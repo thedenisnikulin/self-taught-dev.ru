@@ -36,8 +36,9 @@
         <div class="footer"></div>
         <script>
             utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-            hiring.handlers.switchToGenerator();
             $(document).ready(() => {
+                components.renderGenerator(hiring.state.job)
+                // console.log(components.renderVacancy(hiring.state.job))
                 $(document).on('click', '.fill-in-btn', (e) => {
                     e.preventDefault();
                     $('.city-to-replace').replaceWith(components.cityDropdownMenu())
@@ -74,8 +75,33 @@
                         ],
                         maxItems: 5,
                         searchField: ['name', 'tag'],
-                        onItemAdd: hiring.handlers.addTag,
-                        onItemRemove: hiring.handlers.removeTag,
+                        onItemAdd: (value) => {
+                            const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP'].map(i => i.toLowerCase())
+                            const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
+                            let tagtype;
+                            if (techtags.includes(value)) {
+                                hiring.state.job.tags.tech.push(value)
+                                tagtype = 'tech'
+                            } else {
+                                hiring.state.job.tags.type.push(value)
+                                tagtype = 'type'
+                            };
+                            $('.v-tags').append(`<div class="v-${tagtype}">${value}</div>`)
+                        },
+                        onItemRemove: (value) => {
+                            const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP'].map(i => i.toLowerCase())
+                            const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
+                            let tags = '';
+                            hiring.state.job.tags.tech = hiring.state.job.tags.tech.filter(t => t !== value)
+                            hiring.state.job.tags.type = hiring.state.job.tags.type.filter(t => t !== value)
+                            for(const t of hiring.state.job.tags.type) {
+                                tags += `<div class="v-type">${t}</div>`
+                            }
+                            for(const t of hiring.state.job.tags.tech) {
+                                tags += `<div class="v-tech">${t}</div>`
+                            }
+                            $('.v-tags').html(tags)
+                        },
                         delimiter: ',',
                         persist: false,
                         render: (item) => item.name

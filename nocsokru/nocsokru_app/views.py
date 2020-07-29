@@ -5,16 +5,16 @@ from urllib import request, parse
 import json
 import hashlib
 # local
-from .services import hh
-from .services import qiwi_api_managment as qiwi_api
+from .services.hh_api_management import HeadHunterApiManager
+from .services.qiwi_api_management import QiwiApiManager
 from .models import PaidVacancy
 
 
 def index(req: HttpRequest):
     if req.method == 'GET':
-        jobs, pages = hh.get_hh_jobs()
-        jobs = hh.without_degree(jobs)
-        jobs = hh.prepare_jobs(jobs)
+        jobs, pages = HeadHunterApiManager.get_jobs()
+        jobs = HeadHunterApiManager.without_degree(jobs)
+        jobs = HeadHunterApiManager.prepare_jobs(jobs)
         paid_vacancies = []
         for v in PaidVacancy.objects.all():
             paid_vacancies.append(v.serialize())
@@ -29,11 +29,11 @@ def load_jobs(req: HttpRequest):
         tags = req_body['tags']
         page = req_body['page']
         # get jobs by hhru api
-        jobs, pages = hh.get_hh_jobs(tags, page)
+        jobs, pages = HeadHunterApiManager.get_jobs(tags, page)
         # we need only jobs that don't require a degree
-        jobs = hh.without_degree(jobs)
+        jobs = HeadHunterApiManager.without_degree(jobs)
         # make jobs look prettier
-        jobs = hh.prepare_jobs(jobs)
+        jobs = HeadHunterApiManager.prepare_jobs(jobs)
         # prepare paid vacancies
         paid_vacancies = []
         tags_list = []
@@ -55,7 +55,7 @@ def create_bill(req: HttpRequest):
         return render(req, 'hiring.html')
     elif req.method == "POST":
         bill_id = json.loads(req.body.decode('utf-8'))
-        pay_url = qiwi_api.bill(bill_id)
+        pay_url = QiwiApiManager.bill(bill_id)
         return HttpResponse(json.dumps({'payUrl': pay_url}))
 
 
@@ -63,7 +63,7 @@ def verify_bill(req: HttpRequest):
     if req.method == "POST":
         bill_id = json.loads(req.body.decode('utf-8'))
         print(bill_id)
-        is_paid = qiwi_api.is_paid(bill_id)
+        is_paid = QiwiApiManager.is_paid(bill_id)
         return HttpResponse(json.dumps({'isPaid': is_paid}))
 
 
@@ -71,7 +71,7 @@ def get_job_by_link(req: HttpRequest):
     if req.method == "POST":
         req_body = json.loads(req.body.decode('utf-8'))
         job_link = req_body['jobLink']
-        job = hh.get_hh_job(job_link)
+        job = HeadHunterApiManager.get_job(job_link)
         return HttpResponse(json.dumps({'job': job}))
 
 
@@ -86,7 +86,7 @@ def create_job(req: HttpRequest):
             tags=json.dumps({'tech': req_body['tags']['tech'], 'type': req_body['tags']['type']}),
             url=req_body['url'],
             date=req_body['date'],
-            color='#FFFFFF'
+            color=req_body['color']
         )
         new_vacancy.save()
-        return HttpResponse()
+        return HttpResponse(status=204)

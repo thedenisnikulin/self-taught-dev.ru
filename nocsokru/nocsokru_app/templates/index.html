@@ -78,6 +78,7 @@
             {
                 let billId = localStorage.getItem('nocsdegreeru.hashedjob')
                 if (billId !== null) {
+                    console.log('its not null!! ' + billId)
                     hiring.handlers.verifyBill(billId)
                 }
             }

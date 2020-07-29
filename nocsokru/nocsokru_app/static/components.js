@@ -1,9 +1,9 @@
 const components = {
     cityDropdownMenu: () => {
-        const buttonOrInput = `<button onclick="hiring.handlers.handleChange(this)" id="dd-button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Выберите город
-        <span class="caret"></span></button>`
         return `<div class="city-tags dropdown">
-                ${buttonOrInput}
+                <button id="dd-button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    Выберите город
+                <span class="caret"></span></button>
                 <ul class="dropdown-menu">
                     <li class="dropdown-header">Россия</li>
                     <li><a href="#">Москва</a></li>
@@ -44,98 +44,74 @@ const components = {
                     <li class="dropdown-header">Казахстан</li>
                     <li><a href="#">Нур-султан</a></li>
                 </ul>
-        </div>`},
-        hiringTagsDropdown: ``,
-        generatorVacancyByLink: `
-        <div class='generate-by-link-container'>
-            <div class='vacancy'>
-                <div style="border: 3px #F5BA78 solid" class="vacancy">
-                    <div class="v-start-container">
-                        <img class="employer_logo" src="/static/nophoto.png"></img>
-                        <div class='v-mid-container'>
-                            <p class="name">Название должности</p>
-                            <div><span class="employer">Название вашей компании</span><span>, </span><span class='date'>2020-07-26</span></div>
-                            <div class="v-tags"></div>
-                        </div>
-                    </div>
-                    <div class="v-end-container">
-                        <p class="city">Город</p>
-                        <button class="respond-btn" onclick="window.open('https://www.google.com', '_blank')">Ссылка на сайт</button>
-                    </div>
-                </div>
-
             </div>
-            <div class="gen-content">
-                <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
-                <form class='gen-form' onsubmit="return hiring.handlers.requestJobByLink()">
-                    <input class="hhru-link" name="hhru-link" onchange="hiring.state.jobLink = this.value">
-                    <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
-                </form>
-                <p class='gen-text gi'>или</p>
-                <button class="fill-in-btn" onclick="hiring.handlers.switchToEditor()">Заполнить самостоятельно</button>
-            </div>
-        </div>
-        `,
-        vacancyEditor: `
-        <div class="editor-container">
-            <p>Редактор вакансии</p>
-            <div style="border: 3px #F5BA78 solid" class="vacancy">
+        `},
+        renderVacancy: (vacancy) => `
+            <div style="border: 3px ${vacancy.color} solid" class="vacancy">
                 <div class="v-start-container">
-                    <img class="employer_logo" src="/static/nophoto.png"></img>
+                    <img class="employer_logo" src=${vacancy.employer_logo}></img>
                     <div class='v-mid-container'>
-                        <p class="name">Название должности</p>
-                        <div><span class="employer">Название вашей компании</span><span>, </span><span class='date'>2020-07-26</span></div>
-                        <div class="v-tags"></div>
+                        <p class="name">${vacancy.name}</p>
+                        <div><span class="employer">${vacancy.employer}</span><span>, </span><span class='date'>${vacancy.date}</span></div>
+                        <div class="v-tags">
+                            ${vacancy.tags.type.map(t => `<div class="v-type">${t}</div>`).join('')}
+                            ${vacancy.tags.tech.map(t => `<div class="v-tech">${t}</div>`).join('')}
+                        </div>
                     </div>
                 </div>
                 <div class="v-end-container">
-                    <p class="city">Город</p>
-                    <button class="respond-btn" onclick="window.open('https://www.google.com', '_blank')">Ссылка на сайт</button>
+                    <p class="city">${vacancy.tags.city}</p>
+                    <button class="respond-btn" onclick="window.open('${vacancy.url}', '_blank')">Ссылка на сайт</button>
                 </div>
             </div>
-            <div class="editor">
-                <form class="editor-form" onsubmit="return hiring.handlers.handleSubmit()">
-                    <div class='e-main'>
-                        <input placeholder='name' name="name" onchange="hiring.handlers.handleChange(this)">
-                        <input placeholder='employer' name="employer" onchange="hiring.handlers.handleChange(this)">
-                        <input placeholder='employer_logo' name="employer_logo" onchange="hiring.handlers.handleChange(this)">
-                        <input class='city-to-replace' name="city" onchange="hiring.handlers.handleChange(this)">
-                        <input placeholder='color' name="color" onchange="hiring.handlers.handleChange(this)">
-                        <input placeholder='url' name="url" onchange="hiring.handlers.handleChange(this)">
-                    </div>
-                    <input type="text" class='tags-editor'>
-                    <input onclick="hiring.handlers.switchToPayment()" type="submit" class="gen-btn gi" value="Продолжить">
-                </form>
-                <p class='gen-text gi'>или</p>
-                <button class="fill-in-btn" onclick="hiring.handlers.switchToGenerator()">Заполнить по ссылке</button>
-            </div>
-        </div>
         `,
-        /*html*/
-        paymentComponent: () => `
-        <div class='payment-container'>
-            <p>Вакансия готова к размещению!</p>
-            <div class='vacancy'>
-                <div style="border: 3px ${hiring.state.job.color} solid" class="vacancy">
-                    <div class="v-start-container">
-                        <img class="employer_logo" src="${hiring.state.job.employer_logo}"></img>
-                        <div class='v-mid-container'>
-                            <p class="name">${hiring.state.job.name}</p>
-                            <div><span class="employer">${hiring.state.job.employer}</span><span>, </span><span class='date'${hiring.state.job.date}</span></div>
-                            <div class="v-tags"></div>
+        renderGenerator: (vacancy) =>
+        $('.main-container').html(
+            `<div class='generate-by-link-container'>
+                ${components.renderVacancy(vacancy)}
+                <div class="gen-content">
+                    <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
+                    <form class='gen-form' onsubmit="return hiring.handlers.requestJobByLink()">
+                        <input class="hhru-link" name="hhru-link" onchange="hiring.state.jobLink = this.value">
+                        <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
+                    </form>
+                    <p class='gen-text gi'>или</p>
+                    <button class="fill-in-btn" onclick="components.renderEditor(hiring.state.job)">Заполнить самостоятельно</button>
+                </div>
+            </div>
+        `),
+        renderEditor: (vacancy) => 
+        $('.main-container').html(`
+            <div class="editor-container">
+                <p>Редактор вакансии</p>
+                ${components.renderVacancy(vacancy)}
+                <div class="editor">
+                    <form class="editor-form" onsubmit="return hiring.handlers.handleSubmit()">
+                        <div class='e-main'>
+                            <input placeholder='name' name="name" onchange="hiring.handlers.handleChange(this)">
+                            <input placeholder='employer' name="employer" onchange="hiring.handlers.handleChange(this)">
+                            <input placeholder='employer_logo' name="employer_logo" onchange="hiring.handlers.handleChange(this)">
+                            <input class='city-to-replace' name="city" onchange="hiring.handlers.handleChange(this)">
+                            <input placeholder='color' name="color" onchange="hiring.handlers.handleChange(this)">
+                            <input placeholder='url' name="url" onchange="hiring.handlers.handleChange(this)">
                         </div>
-                    </div>
-                    <div class="v-end-container">
-                        <p class="city">${hiring.state.job.tags.city}</p>
-                        <button class="respond-btn" onclick="window.open('${hiring.state.job.url}, '_blank')">Ссылка на сайт</button>
-                    </div>
+                        <input type="text" class='tags-editor'>
+                        <input onclick="components.renderPaymentProcessor(hiring.state.job)" type="submit" class="gen-btn gi" value="Продолжить">
+                    </form>
+                    <p class='gen-text gi'>или</p>
+                    <button class="fill-in-btn" onclick="components.renderGenerator(hiring.state.job)">Заполнить по ссылке</button>
                 </div>
-
             </div>
-            <div class="pay-btn-container">
-                <button class="pay-btn" onclick="hiring.handlers.requestPayment()">Оплатить</button>
-                <p>Стоимость услуги: 300 рублей</p>
+        `),
+        renderPaymentProcessor: (vacancy) => 
+        $('.main-container').html(`
+            <div class='payment-container'>
+                <p>Вакансия готова к размещению!</p>
+                ${components.renderVacancy(vacancy)}
+                <div class="pay-btn-container">
+                    <button class="pay-btn" onclick="hiring.handlers.requestPayment()">Оплатить</button>
+                    <p>Стоимость услуги: 300 рублей</p>
+                </div>
             </div>
-        </div>
-        `,
+        `),
 }

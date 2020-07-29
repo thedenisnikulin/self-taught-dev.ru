@@ -1,8 +1,8 @@
 from django.db import models
 # local
-from .services.hh import job_tag_aliases
+from .services.constants import JOB_TAGS
 
-# Create your models here.
+
 class PaidVacancy(models.Model):
     name = models.TextField()
     employer = models.TextField()
@@ -14,16 +14,15 @@ class PaidVacancy(models.Model):
     color = models.TextField()
 
     def serialize(self):
-        type_tags = set([tag for tag, aliases in job_tag_aliases['type'].items()
+        type_tags = set([tag for tag, aliases in JOB_TAGS['type'].items()
                          for alias in aliases if alias in self.tags.lower()])
-        tech_tags = set([tag for tag, aliases in job_tag_aliases['tech'].items()
+        tech_tags = set([tag for tag, aliases in JOB_TAGS['tech'].items()
                          for alias in aliases if alias in self.tags.lower()])
         return {
             'name': self.name,
             'employer': self.employer,
             'employer_logo': self.employer_logo,
-            'city': self.city,
-            'tags': {'type': list(type_tags), 'tech': list(tech_tags)},
+            'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': self.city},
             'url': self.url,
             'date': self.date,
             'color': self.color

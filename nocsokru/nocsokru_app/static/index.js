@@ -74,34 +74,12 @@ let app = {
         // add vacancies to DOM at the end of the vacancies list
         addVacancies: (jobs) => {
             app.state.vacancies = []
-            for (let j=0; j<jobs.length; j++) {
-                let vac = '' 
-                vac += `
-                <div class="vacancy">
-                    <div class="v-start-container">
-                        <img class="employer-logo" src="${jobs[j].employer_logo}"></img>
-                        <div class='v-mid-container'>
-                            <p class="name">${jobs[j].name}</p>
-                            <p class="employer-date">${jobs[j].employer}, ${jobs[j].date}</p>
-                            <div class="v-tags">
-                `;
-                for (const t of jobs[j].tags.type) {
-                    vac += `<div class="v-type">${t}</div>`
-                };
-                for (const t of jobs[j].tags.tech) {
-                    vac += `<div class="v-tech">${t}</div>`
-                };
-                vac += `</div>
-                        </div>
-                    </div>
-                    <div class="v-end-container">
-                        <p class="city">${jobs[j].city}</p>
-                        <button class="respond-btn" onclick="window.open('${jobs[j].url}','_blank')">Откликнуться</button>
-                    </div>
-                </div>`
-                app.state.vacancies.push(vac)
-                document.getElementById("vacancies").innerHTML += app.state.vacancies[j]
-            }
+            document.getElementById("vacancies").innerHTML = jobs.map(
+                v => {
+                    app.state.vacancies.push(v);
+                    return components.renderVacancy(v)
+                }
+            ).join('')
         },
         // remove current vacancies and set new ones
         setVacancies: (jobs) => {
@@ -111,34 +89,12 @@ let app = {
         setPaidVacancies: (jobs) => {
             document.getElementById("paid-vacancies").innerHTML = ""
             app.state.paidVacancies = []
-            for (let j=0; j<jobs.length; j++) {
-                let vac = '' 
-                vac += `
-                <div style="border: 3px ${jobs[j].color} solid" class="vacancy">
-                    <div class="v-start-container">
-                        <img class="employer-logo" src="${jobs[j].employer_logo}"></img>
-                        <div class='v-mid-container'>
-                            <p class="name">${jobs[j].name}</p>
-                            <p class="employer-date">${jobs[j].employer}, ${jobs[j].date}</p>
-                            <div class="v-tags">
-                `;
-                for (const t of jobs[j].tags.type) {
-                    vac += `<div class="v-type">${t}</div>`
-                };
-                for (const t of jobs[j].tags.tech) {
-                    vac += `<div class="v-tech">${t}</div>`
-                };
-                vac += `</div>
-                        </div>
-                    </div>
-                    <div class="v-end-container">
-                        <p class="city">${jobs[j].city}</p>
-                        <button class="respond-btn" onclick="window.open('${jobs[j].url}','_blank')">Откликнуться</button>
-                    </div>
-                </div>`
-                app.state.vacancies.push(vac)
-                document.getElementById("paid-vacancies").innerHTML += app.state.vacancies[j]
-            }
+            document.getElementById("paid-vacancies").innerHTML = jobs.map(
+                v => {
+                    app.state.paidVacancies.push(v);
+                    return components.renderVacancy(v)
+                }
+            ).join('')
         },
         // set app.request.city by value from dropdown city selection list
         setCity: () => {

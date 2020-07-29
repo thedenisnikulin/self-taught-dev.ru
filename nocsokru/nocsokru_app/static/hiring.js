@@ -1,16 +1,16 @@
 let hiring = {
     state: {
         job: {
-            name: '',
-            employer: '',
-            employer_logo: '',
+            name: 'Должность',
+            employer: 'Ваша компания',
+            employer_logo: '/static/nophoto.png',
             tags: {
                 tech: [],
                 type: [],
-                city: '',
+                city: 'Город',
             },
             url: '',
-            date: '',
+            date: new Date().toISOString().slice(0,10),
             color: '#F5BA78'
         },
         jobLink: ''
@@ -18,7 +18,7 @@ let hiring = {
     handlers: {
         requestPayment: () => {
             // TODO add time
-            let hashedJob = utils.generateHash(JSON.stringify(hiring.state.job)).toString()
+            let hashedJob = utils.generateHash(JSON.stringify(hiring.state.job) + new Date().toISOString()).toString()
             localStorage.setItem('nocsdegreeru.hashedjob', hashedJob)
             utils.sendRequest('/bills/create', 'POST', hashedJob, {
                 success: (response) => {
@@ -72,78 +72,25 @@ let hiring = {
                             success: (response) => {
                                 console.log('created')
                                 localStorage.removeItem('nocsdegreeru.hashedjob')
-                            }
+                                console.log(`here ${localStorage.getItem('nocsdegreeru.hashedjob')}`)
+                            },
                         })
                     }
                 }
             })
         },
-        switchToEditor: () => {
-            $('.generate-by-link-container').remove()
-            $(".main-container").append(components.vacancyEditor)
-        },
-        switchToGenerator: () => {
-            $('.main-container').append(components.generatorVacancyByLink)
-        },
-        switchToPayment: () => {
-            $('.generate-by-link-container').remove()
-            $('.editor-container').remove()
-            $('.main-container').append(components.paymentComponent())
-            for (const t of hiring.state.job.tags.type) {
-                $('.v-tags').append(`<div class="v-type">${t}</div>`)
-            } 
-            for (const t of hiring.state.job.tags.tech) {
-                $('.v-tags').append(`<div class="v-tech">${t}</div>`)
-            }
-        },
         requestJobByLink: () => {
             utils.sendRequest('/jobs/generate', 'POST', JSON.stringify({jobLink: hiring.state.jobLink}), {
                 success: (response) => {
                     $('.v-tags').html('')
+                    response.job.color = '#F5BA78'
                     hiring.state.job = response.job
-                    console.log(response.job)
-                    for(const [key, value] of Object.entries(hiring.state.job)) {
-                        hiring.handlers.handleChange({name: key, value: value})
-                    }
-                    for (const t of hiring.state.job.tags.type) {
-                        $('.v-tags').append(`<div class="v-type">${t}</div>`)
-                    } 
-                    for (const t of hiring.state.job.tags.tech) {
-                        $('.v-tags').append(`<div class="v-tech">${t}</div>`)
-                    }
-                    $('.city').html(hiring.state.job.tags.city)
-                    hiring.state.job.color = '#F5BA78';
+                    components.renderGenerator(hiring.state.job)
+                    $('.gen-content').html(`<button onclick='components.renderPaymentProcessor(hiring.state.job)' class='gen-btn gi'>Продолжить</button>`)
+                    console.log(hiring.state.job)
                 }
             });
-            $('.gen-content').html("<button onclick='hiring.handlers.switchToPayment()' class='gen-btn gi'>Продолжить</button>")
             return false;
         },
-        addTag: (value) => {
-            const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP'].map(i => i.toLowerCase())
-            const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
-            let tagtype;
-            if (techtags.includes(value)) {
-                hiring.state.job.tags.tech.push(value)
-                tagtype = 'tech'
-            } else {
-                hiring.state.job.tags.type.push(value)
-                tagtype = 'type'
-            };
-            $('.v-tags').append(`<div class="v-${tagtype}">${value}</div>`)
-        },
-        removeTag: (value) => {
-            const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP'].map(i => i.toLowerCase())
-            const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
-            let tags = '';
-            hiring.state.job.tags.tech = hiring.state.job.tags.tech.filter(t => t !== value)
-            hiring.state.job.tags.type = hiring.state.job.tags.type.filter(t => t !== value)
-            for(const t of hiring.state.job.tags.type) {
-                tags += `<div class="v-type">${t}</div>`
-            }
-            for(const t of hiring.state.job.tags.tech) {
-                tags += `<div class="v-tech">${t}</div>`
-            }
-            $('.v-tags').html(tags)
-        }
     }
 }
