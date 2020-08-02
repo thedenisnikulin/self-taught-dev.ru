@@ -18,6 +18,7 @@
         <!--load static files-->
         <link rel="stylesheet" href="{% static 'hiring.css' %}">
         <script src="{% static 'hiring.js' %}"></script>
+        <script src="{% static 'index.js' %}"></script>
         <script src="{% static 'utils.js' %}"></script>
         <script src="{% static 'components.js' %}"></script>
     </head>
@@ -32,12 +33,54 @@
                 <p class="small-title">Просто разместите свою вакансию у нас на сайте</p>
             </div>
         </div>
+        <div class="info-container" style="background-color: #6573A0;">
+            <div class="info">
+                <p class="info-header">Алгоритм размещения:</p>
+                <ol>
+                    <li class="info-body">Сгенерировать / заполнить вашу вакансию</li>
+                    <li class="info-body">Оплатить</li>
+                    <li class="info-body">Опубликовать вакансию</li>
+                </ol>
+            </div>
+            <div class="info">
+                <p class="info-header">Условия размещения:</p>
+                <ol>
+                    <li class="info-body">Стоимость размещения вакансии - 300 российских рублей</li>
+                    <li class="info-body">Вакансия будет опубликована на сайте как только вы ее оплатите</li>
+                    <li class="info-body">Вакансия появится в самом начале списка вакансий</li>
+                    <li class="info-body">Срок размещения - навсегда или до вашей просьбы удаления</li>
+                    <li class="info-body">Соискатели смогут найдут вашу вакансию:</li>
+                    <ol type="a">
+                        <li class="info-body">на главном меню сайта</li>
+                        <li class="info-body">выбрав один из тэгов, указанных вами в вакансии</li>
+                        <li class="info-body">выбрав город, указанный вами в вакансии</li>
+                    </ol>
+                </ol>
+            </div>
+        </div>
         <div class="main-container"></div>
-        <div class="footer"></div>
+        <div class="footer">
+            <div class="footer-left">
+                <p class="footer-name">nocsdegree.ru</p>
+                <p class="footer-small-name">Подбор вакансий происходит с hh.ru</p>
+            </div>
+            <div class="footer-right">
+                <div class="footer-info-container">
+                    <p class="flb">Ваши данные</p>
+                    <a style="color:#1A1C23;" href="https://drive.google.com/file/d/1ZQaiaRxoEKRD_j760pr9DaX0L7NRralQ/view?usp=sharing">Политика обработки
+                        персональных данных</a>
+                </div>
+                <div class="footer-info-container">
+                    <p class="flb">Контакты</p>
+                    <a style="color:#1A1C23;" id="email">E-mail</a>
+                </div>
+            </div>
+        </div>
         <script>
             utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
             $(document).ready(() => {
                 components.renderGenerator(hiring.state.job)
+                app.handlers.setupEmail()
                 // console.log(components.renderVacancy(hiring.state.job))
                 $(document).on('click', '.fill-in-btn', (e) => {
                     e.preventDefault();

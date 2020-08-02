@@ -78,6 +78,7 @@ def get_job_by_link(req: HttpRequest):
 def create_job(req: HttpRequest):
     if req.method == "POST":
         req_body = json.loads(req.body.decode('utf-8'))
+        print(req_body['tags']['tech'])
         new_vacancy = PaidVacancy(
             name=req_body['name'],
             employer=req_body['employer'],

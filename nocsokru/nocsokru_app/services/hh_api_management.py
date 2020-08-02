@@ -107,8 +107,7 @@ class HeadHunterApiManager:
             prepared_jobs.append({
                 'name': job['name'],
                 'employer': job['employer']['name'],
-                'employer_logo': job['employer']['logo_urls']['original'] if job['employer'][
-                                                                                 'logo_urls'] is not None else '/static/nophoto.png',
+                'employer_logo': job['employer']['logo_urls']['original'] if job['employer']['logo_urls'] is not None else '/static/nophoto.png',
                 'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': job['area']['name']},
                 # back to list to make JSON serialization easier
                 'url': job['alternate_url'],

@@ -9,7 +9,7 @@ JOB_TAGS = {
     },
     'tech': {
         'python': ['python'],
-        'java': ['java ', 'java/', 'java-', 'java,'],  # those symbols at the end are important not to get JS jobs
+        'java': ['java ', 'java/', 'java-', 'java,', 'java"'],  # those symbols at the end are important not to get JS jobs
         'javascript': ['javascript', 'js'],
         'c#': ['c#', 'с#', '.net'],     # some employers use cyrillic 'c', so double check
         'c++': ['c++', 'с++'],  # yet another 'c' double check

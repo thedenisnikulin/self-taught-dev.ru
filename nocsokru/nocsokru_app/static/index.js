@@ -33,7 +33,9 @@ let app = {
             })
         },
         // load more vacancies
-        loadMore: () => {
+        loadMore: (btn) => {
+            btn.innerHTML = "Загрузка..."
+            btn.disabled = true;
             utils.sendRequest('/jobs/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
                     app.handlers.addVacancies(data.jobs)
@@ -41,6 +43,8 @@ let app = {
                     app.state.request.page++
                     app.handlers.addLoadButton(app.state.pages)
                     console.log(`request: ${JSON.stringify(app.state.request)}\npages: ${app.state.pages}\nvacancies_length: ${app.state.vacancies.length}`)
+                    btn.disabled = false;
+                    btn.innerHTML = "Загрузить ещё"
                 }
             })
         },
@@ -74,7 +78,7 @@ let app = {
         // add vacancies to DOM at the end of the vacancies list
         addVacancies: (jobs) => {
             app.state.vacancies = []
-            document.getElementById("vacancies").innerHTML = jobs.map(
+            document.getElementById("vacancies").innerHTML += jobs.map(
                 v => {
                     app.state.vacancies.push(v);
                     return components.renderVacancy(v)
@@ -107,7 +111,7 @@ let app = {
             if (app.state.request.page < pgs) {
                 console.log('insert')
                 // if no element with id 'load-more', then place such element after 'vacancies'
-                !document.getElementById("loadbtn") && $("#loadbtn-container").append("<button id='loadbtn' onclick='app.handlers.loadMore()'>Загрузить ещё</button>")
+                !document.getElementById("loadbtn") && $("#loadbtn-container").append("<button id='loadbtn' onclick='app.handlers.loadMore(this)'>Загрузить ещё</button>")
             } else {
                 console.log('remove')
                 $('#loadbtn').remove()
@@ -118,6 +122,26 @@ let app = {
                 return true
             }
             return false
+        },
+        setupEmail: () => {
+            document.getElementById('email').setAttribute('href', 'mailto:thedenisnikulin@gmail.com')
+            $('a[href^=mailto]').each(function() {
+                var href = $(this).attr('href');
+                $(this).click(function() {
+                var t;
+                var self = $(this);
+
+                $(window).blur(function() {
+                    // The browser apparently responded, so stop the timeout.
+                    clearTimeout(t);
+                });
+
+                t = setTimeout(function() {
+                    // The browser did not respond after 500ms, so open an alternative URL.
+                    document.location.href = 'https://mail.google.com/mail/?view=cm&fs=1&to=thedenisnikulin@gmail.com';
+                }, 500);
+                });
+            });
         }
     }
 }

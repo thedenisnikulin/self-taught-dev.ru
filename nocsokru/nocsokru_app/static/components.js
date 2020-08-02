@@ -71,8 +71,8 @@ const components = {
                 ${components.renderVacancy(vacancy)}
                 <div class="gen-content">
                     <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
-                    <form class='gen-form' onsubmit="return hiring.handlers.requestJobByLink()">
-                        <input class="hhru-link" name="hhru-link" onchange="hiring.state.jobLink = this.value">
+                    <form class='gen-form'onsubmit="return hiring.handlers.requestJobByLink()">
+                        <input class="hhru-link" placeholder="https://hh.ru/vacancy/12345678"  name="hhru-link" onchange="hiring.state.jobLink = this.value">
                         <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
                     </form>
                     <p class='gen-text gi'>или</p>
@@ -80,21 +80,34 @@ const components = {
                 </div>
             </div>
         `),
-        renderEditor: (vacancy) => 
+        renderEditor: (vacancy) => /*html */
         $('.main-container').html(`
             <div class="editor-container">
-                <p>Редактор вакансии</p>
+                <p class="e-title">Редактор вакансии</p>
                 ${components.renderVacancy(vacancy)}
                 <div class="editor">
                     <form class="editor-form" onsubmit="return hiring.handlers.handleSubmit()">
                         <div class='e-main'>
-                            <input placeholder='name' name="name" onchange="hiring.handlers.handleChange(this)">
-                            <input placeholder='employer' name="employer" onchange="hiring.handlers.handleChange(this)">
-                            <input placeholder='employer_logo' name="employer_logo" onchange="hiring.handlers.handleChange(this)">
-                            <input class='city-to-replace' name="city" onchange="hiring.handlers.handleChange(this)">
-                            <input placeholder='color' name="color" onchange="hiring.handlers.handleChange(this)">
-                            <input placeholder='url' name="url" onchange="hiring.handlers.handleChange(this)">
+                            <div class="e-form-container">
+                                <div class="e-form">
+                                    <label>Название должности</label>
+                                    <input class="f-inp" name="name" onchange="hiring.handlers.handleChange(this)">
+                                    <label>Название компании</label>
+                                    <input class="f-inp" name="employer" onchange="hiring.handlers.handleChange(this)">
+                                    <label>Ссылка на логотип компании</label>
+                                    <input class="f-inp" name="employer_logo" onchange="hiring.handlers.handleChange(this)">
+                                </div>
+                                <div class="e-form">
+                                    <label>Город</label>
+                                    <input class='city-to-replace f-inp' name="city" onchange="hiring.handlers.handleChange(this)">
+                                    <label>Цвет границ</label>
+                                    <input class="f-inp" placeholder='#F5BA78' name="color" onchange="hiring.handlers.handleChange(this)">
+                                    <label>Ссылка для отклика</label>
+                                    <input class="f-inp" name="url" onchange="hiring.handlers.handleChange(this)">
+                                </div>
+                            </div>
                         </div>
+                        <label>Метки</label>
                         <input type="text" class='tags-editor'>
                         <input onclick="components.renderPaymentProcessor(hiring.state.job)" type="submit" class="gen-btn gi" value="Продолжить">
                     </form>
@@ -106,7 +119,7 @@ const components = {
         renderPaymentProcessor: (vacancy) => 
         $('.main-container').html(`
             <div class='payment-container'>
-                <p>Вакансия готова к размещению!</p>
+                <p class="e-title">Вакансия готова к размещению!</p>
                 ${components.renderVacancy(vacancy)}
                 <div class="pay-btn-container">
                     <button class="pay-btn" onclick="hiring.handlers.requestPayment()">Оплатить</button>

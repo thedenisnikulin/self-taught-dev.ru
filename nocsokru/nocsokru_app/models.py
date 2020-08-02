@@ -1,4 +1,5 @@
 from django.db import models
+import json
 # local
 from .services.constants import JOB_TAGS
 
@@ -15,9 +16,11 @@ class PaidVacancy(models.Model):
 
     def serialize(self):
         type_tags = set([tag for tag, aliases in JOB_TAGS['type'].items()
-                         for alias in aliases if alias in self.tags.lower()])
+                         for alias in aliases if alias in self.tags])
         tech_tags = set([tag for tag, aliases in JOB_TAGS['tech'].items()
-                         for alias in aliases if alias in self.tags.lower()])
+                         for alias in aliases if alias in self.tags])
+        print(self.tags)
+        print(tech_tags)
         return {
             'name': self.name,
             'employer': self.employer,
