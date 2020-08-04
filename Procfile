@@ -1,1 +1,1 @@
-web: gunicorn nocsokru.wsgi --log-file -
+web: gunicorn nocsokru.wsgi:application --log-file -
