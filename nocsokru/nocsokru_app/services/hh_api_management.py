@@ -16,7 +16,6 @@ class HeadHunterApiManager:
         type_tag = f"({' OR '.join(tags['type'])})" if ('type' in tags.keys()) and (len(tags['type']) != 0) else ''
         tech_tag = f"({' OR '.join(tags['tech'])})" if ('tech' in tags.keys()) and (len(tags['tech']) != 0) else ''
         city_tag = tags['city']
-        print(tags['city'])
         # if both are empty, just fill in 'developer', 'cos we don't want to have an empty query
         if type_tag + tech_tag + city_tag == '':
             type_tag = 'developer OR разработчик OR программист'
@@ -33,7 +32,6 @@ class HeadHunterApiManager:
 
         # prepare tags
         tags_str = HeadHunterApiManager.prepare_tags(tags)
-        print(tags_str)
 
         # update querystring according to hh.ru api specification
         querystring['text'] = tags_str  # set text
@@ -91,7 +89,7 @@ class HeadHunterApiManager:
                     no_degree_jobs.append(job)
             except AttributeError:
                 # since not every job posting on hh.ru has requirements,
-                # we can just skip ones without it
+                # we can just skip ones without them
                 pass
         return no_degree_jobs
 
@@ -100,10 +98,10 @@ class HeadHunterApiManager:
         prepared_jobs = []
         for job in jobs:
             # get a set of tags that job name may contain. (we use set to exclude repetitive ones)
-            type_tags = set([tag for tag, aliases in JOB_TAGS['type'].items()
-                             for alias in aliases if alias in (job['name'] + job['snippet']['requirement']).lower()])
+            type_tags = set([tag for tag, aliases in JOB_TAGS['type'].items()   # None to str if None
+                             for alias in aliases if alias in (job['name'] + str(job['snippet']['requirement'])).lower()])
             tech_tags = set([tag for tag, aliases in JOB_TAGS['tech'].items()
-                             for alias in aliases if alias in (job['name'] + job['snippet']['requirement']).lower()])
+                             for alias in aliases if alias in (job['name'] + str(job['snippet']['requirement'])).lower()])
             prepared_jobs.append({
                 'name': job['name'],
                 'employer': job['employer']['name'],

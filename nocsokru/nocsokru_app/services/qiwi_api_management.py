@@ -1,7 +1,7 @@
 import json
 from urllib import request
 # local
-from ..config import QIWI_SECRET
+from config import QIWI_SECRET, QIWI_THEME_CODE
 
 
 class QiwiApiManager:
@@ -28,7 +28,7 @@ class QiwiApiManager:
                 "expirationDateTime": "2020-09-10T09:02:00+03:00",
                 "customer": {},
                 "customFields": {
-                    "themeCode": "Denys-NE7by9tG8n"
+                    "themeCode": QIWI_THEME_CODE
                 }
             }).encode()
         )).read()
