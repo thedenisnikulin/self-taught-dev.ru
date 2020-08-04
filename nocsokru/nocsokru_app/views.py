@@ -1,9 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
-from django.core import serializers
-from urllib import request, parse
 import json
-import hashlib
 # local
 from .services.hh_api_management import HeadHunterApiManager
 from .services.qiwi_api_management import QiwiApiManager

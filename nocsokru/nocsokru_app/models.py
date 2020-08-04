@@ -1,5 +1,4 @@
 from django.db import models
-import json
 # local
 from .services.constants import JOB_TAGS
 
