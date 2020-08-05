@@ -33,3 +33,4 @@ class PaidVacancy(models.Model):
 
 class PromoCode(models.Model):
     text = models.TextField()
+    amount = models.TextField()
