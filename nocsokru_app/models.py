@@ -29,3 +29,7 @@ class PaidVacancy(models.Model):
             'date': self.date,
             'color': self.color
         }
+
+
+class PromoCode(models.Model):
+    text = models.TextField()

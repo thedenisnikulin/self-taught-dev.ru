@@ -1,7 +1,9 @@
 import json
 from urllib import request
+import datetime
 # local
-from config import QIWI_SECRET, QIWI_THEME_CODE
+from config import QIWI_SECRET, QIWI_THEME_CODE, QIWI_DEFAULT_AMOUNT
+from ..models import PromoCode
 
 
 class QiwiApiManager:
@@ -15,17 +17,22 @@ class QiwiApiManager:
         return r
 
     @staticmethod
-    def bill(bill_id: str) -> str:
+    def bill(bill_id: str, promocode: str = None) -> str:
         r = QiwiApiManager.create_request(bill_id, 'PUT')
+        amount = QIWI_DEFAULT_AMOUNT
+        if promocode:
+            for p in PromoCode.objects.all():
+                if p.text == promocode:
+                    amount = "150.00"
+        expires_in_week = (datetime.datetime.now() + datetime.timedelta(days=7)).astimezone().replace(microsecond=0).isoformat()
         data = request.urlopen(r, data=bytes(
             json.dumps({
                 "amount": {
                     "currency": "RUB",
-                    "value": "1.00"
+                    "value": amount
                 },
                 "comment": "Рад сотрудничать!",
-                # TODO generic date
-                "expirationDateTime": "2020-09-10T09:02:00+03:00",
+                "expirationDateTime": expires_in_week,
                 "customer": {},
                 "customFields": {
                     "themeCode": QIWI_THEME_CODE

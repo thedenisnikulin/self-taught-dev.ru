@@ -4,7 +4,7 @@ import json
 # local
 from .services.hh_api_management import HeadHunterApiManager
 from .services.qiwi_api_management import QiwiApiManager
-from .models import PaidVacancy
+from .models import PaidVacancy, PromoCode
 
 
 def index(req: HttpRequest):
@@ -51,8 +51,12 @@ def create_bill(req: HttpRequest):
     if req.method == "GET":
         return render(req, 'hiring.html')
     elif req.method == "POST":
-        bill_id = json.loads(req.body.decode('utf-8'))
-        pay_url = QiwiApiManager.bill(bill_id)
+        req_body = json.loads(req.body.decode('utf-8'))
+        bill_id = req_body['billId']
+        promocode = req_body['promocode']
+        print(promocode)
+        print(type(promocode))
+        pay_url = QiwiApiManager.bill(bill_id, promocode)
         return HttpResponse(json.dumps({'payUrl': pay_url}))
 
 

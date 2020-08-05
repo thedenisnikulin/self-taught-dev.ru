@@ -18,8 +18,14 @@ let hiring = {
     handlers: {
         requestPayment: () => {
             // TODO add time
-            let hashedJob = utils.generateHash(JSON.stringify(hiring.state.job) + new Date().toISOString()).toString()
-            localStorage.setItem('nocsdegreeru.hashedjob', hashedJob)
+            const hashedJob = utils.generateHash(JSON.stringify(hiring.state.job) + new Date().toISOString()).toString()
+            const billData = {
+                billId: hashedJob,
+                promocode: new URLSearchParams(window.location.search).get('promo')
+            }
+            console.log(billData)
+            localStorage.setItem('nocsdegreeru.hashedjob', billData)
+
             utils.sendRequest('/bills/create', 'POST', hashedJob, {
                 success: (response) => {
                     console.log('got url')
