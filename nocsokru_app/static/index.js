@@ -20,7 +20,7 @@ let app = {
     handlers: {
         // send app.state.request to server with POST request
         sendRequest: () => {
-            $('.tags').after('<p id="v-loading" style="text-align: center;color: white;">Загрузка...</p>')
+            $('#v-loading').length && $('.tags').after('<p id="v-loading" style="text-align: center;color: white;">Загрузка...</p>')
             utils.sendRequest('/jobs/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
                     console.log('set to 1')
