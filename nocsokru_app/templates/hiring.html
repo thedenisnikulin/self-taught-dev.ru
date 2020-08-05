@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        {% block headcontent %}
         <meta charset="UTF-8">
         {% csrf_token  %}
         {% load static %}
@@ -22,6 +23,7 @@
         <script src="{% static 'index.js' %}"></script>
         <script src="{% static 'utils.js' %}"></script>
         <script src="{% static 'components.js' %}"></script>
+        {% endblock %}
     </head>
     <body>
         <div class="header">
