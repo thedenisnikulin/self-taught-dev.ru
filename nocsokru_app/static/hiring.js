@@ -24,9 +24,9 @@ let hiring = {
                 promocode: new URLSearchParams(window.location.search).get('promo')
             }
             console.log(billData)
-            localStorage.setItem('nocsdegreeru.hashedjob', billData)
+            localStorage.setItem('nocsdegreeru.hashedjob', hashedJob)
 
-            utils.sendRequest('/bills/create', 'POST', hashedJob, {
+            utils.sendRequest('/bills/create', 'POST', JSON.stringify(billData), {
                 success: (response) => {
                     console.log('got url')
                     hiring.handlers.openBill(response.payUrl)

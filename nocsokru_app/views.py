@@ -54,8 +54,6 @@ def create_bill(req: HttpRequest):
         req_body = json.loads(req.body.decode('utf-8'))
         bill_id = req_body['billId']
         promocode = req_body['promocode']
-        print(promocode)
-        print(type(promocode))
         pay_url = QiwiApiManager.bill(bill_id, promocode)
         return HttpResponse(json.dumps({'payUrl': pay_url}))
 
