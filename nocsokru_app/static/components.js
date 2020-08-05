@@ -61,7 +61,7 @@ const components = {
                 </div>
                 <div class="v-end-container">
                     <p class="city">${vacancy.tags.city}</p>
-                    <button class="respond-btn" onclick="window.open('${vacancy.url}', '_blank')">Ссылка на сайт</button>
+                    <button class="respond-btn" onclick="window.open('${vacancy.url}', '_blank')">Откликнуться</button>
                 </div>
             </div>
         `,
