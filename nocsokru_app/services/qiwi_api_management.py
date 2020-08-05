@@ -21,13 +21,9 @@ class QiwiApiManager:
         r = QiwiApiManager.create_request(bill_id, 'PUT')
         amount = QIWI_DEFAULT_AMOUNT
         if promocode:
-            print('IN IF PROMOCODE')
             for p in PromoCode.objects.all():
-                print(p)
-                print(p.text)
                 if p.text == promocode:
                     amount = p.amount
-        print(f"AMOUNT: {amount}")
         expires_in_week = (datetime.datetime.now() + datetime.timedelta(days=7)).astimezone().replace(microsecond=0).isoformat()
         data = request.urlopen(r, data=bytes(
             json.dumps({
