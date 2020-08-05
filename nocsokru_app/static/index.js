@@ -20,6 +20,7 @@ let app = {
     handlers: {
         // send app.state.request to server with POST request
         sendRequest: () => {
+            $('.tags').after('<p id="v-loading" style="text-align: center;color: white;">Загрузка...</p>')
             utils.sendRequest('/jobs/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
                     console.log('set to 1')
@@ -29,6 +30,7 @@ let app = {
                     app.handlers.setPaidVacancies(data.paid)
                     app.state.pages = data.pages
                     app.handlers.addLoadButton(app.state.pages)
+                    $('#v-loading').remove()
                 }
             })
         },
