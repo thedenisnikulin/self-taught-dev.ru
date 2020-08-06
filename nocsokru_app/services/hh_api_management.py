@@ -77,7 +77,7 @@ class HeadHunterApiManager:
     @staticmethod
     def without_degree(jobs: list):
         no_degree_jobs = []
-        avoid = ['высшее', 'образование', 'вуз', 'профильное', 'студент']
+        avoid = ['высшее', 'образование', 'вуз', 'профильное', 'студент', 'бакалавр', 'bachelor', 'магистр']
         for job in jobs:
             requirements = job['snippet']['requirement']
             try:
