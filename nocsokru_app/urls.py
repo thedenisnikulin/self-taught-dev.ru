@@ -10,4 +10,4 @@ urlpatterns = [
     path('vacancies/getbylink', views.get_vacancy_by_link, name='getbylink'),
     path('bills/create', views.create_bill, name='create_bill'),
     path('bills/verify', views.verify_bill, name='verify_bill'),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

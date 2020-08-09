@@ -6,6 +6,8 @@ from .services.hh_api_management import HeadHunterApiManager
 from .services.qiwi_api_management import QiwiApiManager
 from .models import PaidVacancy
 
+def log(v, p, op=None) -> None:
+    print(10*'-'+f"\nvacancies: {len(v)}\npages: {p}\nlast: {v[-1]['name']}\nonpage: {op}\n"+10*'-')
 
 def index(req: HttpRequest):
     if req.method == 'GET':
@@ -15,7 +17,7 @@ def index(req: HttpRequest):
         paid_vacancies = []
         for v in PaidVacancy.objects.all():
             paid_vacancies.append(v.serialize())
-        print(paid_vacancies)
+        log(vacancies, pages)
         context = {'vacancies': json.dumps(vacancies), 'paid': json.dumps(paid_vacancies), 'pages': pages}
         return render(req, 'index.html', context)
 
@@ -43,7 +45,7 @@ def load_vacancies(req: HttpRequest):
                 if any(t in tag for t in tags_list) or v.city == tags['city']:
                     paid_vacancies.append(v.serialize())
                     break
-        print(len(paid_vacancies))
+        log(vacancies, pages, page)
         return HttpResponse(json.dumps({'vacancies': vacancies, 'paid': paid_vacancies, 'pages': pages}))
 
 

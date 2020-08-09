@@ -20,10 +20,10 @@ let app = {
     handlers: {
         // send app.state.request to server with POST request
         sendRequest: () => {
+            app.state.request.page = 1
             !$('#v-loading').length && $('.tags').after('<p id="v-loading" style="text-align: center;color: white;">Загрузка...</p>')
             utils.sendRequest('/vacancies/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
-                    app.state.request.page = 1
                     app.handlers.setVacancies(data.vacancies)
                     app.handlers.setPaidVacancies(data.paid)
                     app.state.pages = data.pages
@@ -37,11 +37,11 @@ let app = {
         loadMore: (btn) => {
             btn.innerHTML = "Загрузка..."
             btn.disabled = true;
+            app.state.request.page++
             utils.sendRequest('/vacancies/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
                     app.handlers.addVacancies(data.vacancies)
                     app.state.pages = data.pages
-                    app.state.request.page++
                     app.handlers.addLoadButton(app.state.pages)
                     btn.disabled = false;
                     btn.innerHTML = "Загрузить ещё"
