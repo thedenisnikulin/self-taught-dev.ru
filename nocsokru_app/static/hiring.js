@@ -24,7 +24,7 @@ let hiring = {
                 promocode: new URLSearchParams(window.location.search).get('promo')
             }
             console.log(billData)
-            localStorage.setItem('nocsdegreeru.hashedjob', hashedJob)
+            localStorage.setItem('stdru.hashedjob', hashedJob)
 
             utils.sendRequest('/bills/create', 'POST', JSON.stringify(billData), {
                 success: (response) => {
@@ -58,17 +58,17 @@ let hiring = {
                 .then(response => {
                     console.log('successfully paid:')
                     console.log(response)
-                    hiring.handlers.verifyBill(localStorage.getItem('nocsdegreeru.hashedjob'))
+                    hiring.handlers.verifyBill(localStorage.getItem('stdru.hashedjob'))
                 })
                 .catch(error => {
                     console.log(error)
                     if (error.reason === "POPUP_CLOSED") {
-                        hiring.handlers.verifyBill(localStorage.getItem('nocsdegreeru.hashedjob'))
+                        hiring.handlers.verifyBill(localStorage.getItem('stdru.hashedjob'))
                     }
                 })
         },
         verifyBill: (billId) => {
-            utils.sendRequest('/bills/verify', 'POST', localStorage.getItem('nocsdegreeru.hashedjob'), {
+            utils.sendRequest('/bills/verify', 'POST', localStorage.getItem('stdru.hashedjob'), {
                 success: (response) => {
                     console.log('is paid ? ' + response.isPaid)
                     if (response.isPaid === true) {
@@ -77,8 +77,8 @@ let hiring = {
                         utils.sendRequest('/jobs/create', 'POST', JSON.stringify(hiring.state.job), {
                             success: (response) => {
                                 console.log('created')
-                                localStorage.removeItem('nocsdegreeru.hashedjob')
-                                console.log(`here ${localStorage.getItem('nocsdegreeru.hashedjob')}`)
+                                localStorage.removeItem('stdru.hashedjob')
+                                console.log(`here ${localStorage.getItem('stdru.hashedjob')}`)
                             },
                         })
                     }
