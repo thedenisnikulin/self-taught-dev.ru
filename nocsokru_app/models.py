@@ -1,6 +1,6 @@
 from django.db import models
 # local
-from .services.constants import JOB_TAGS
+from .services.constants import VACANCY_TAGS
 
 
 class PaidVacancy(models.Model):
@@ -14,9 +14,9 @@ class PaidVacancy(models.Model):
     color = models.TextField()
 
     def serialize(self):
-        type_tags = set([tag for tag, aliases in JOB_TAGS['type'].items()
+        type_tags = set([tag for tag, aliases in VACANCY_TAGS['type'].items()
                          for alias in aliases if alias in self.tags])
-        tech_tags = set([tag for tag, aliases in JOB_TAGS['tech'].items()
+        tech_tags = set([tag for tag, aliases in VACANCY_TAGS['tech'].items()
                          for alias in aliases if alias in self.tags])
         print(self.tags)
         print(tech_tags)

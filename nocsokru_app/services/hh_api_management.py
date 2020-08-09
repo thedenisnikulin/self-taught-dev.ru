@@ -2,16 +2,15 @@ from typing import Tuple
 from urllib import request, parse
 import json
 # local
-from .constants import URL, JOB_TAGS
+from .constants import URL, VACANCY_TAGS
 
 
 class HeadHunterApiManager:
     @staticmethod
     def prepare_tags(tags: dict) -> str:
-        for tag in tags.values():
+        for k in tags.keys():
             # to lower case
-            tag = [t.lower() for t in tag]
-
+            tags[k] = [t.lower() for t in tags[k]] if type(tags[k]) is list else tags[k].lower()
         # AND & OR - operators from hh.ru api
         type_tag = f"({' OR '.join(tags['type'])})" if ('type' in tags.keys()) and (len(tags['type']) != 0) else ''
         tech_tag = f"({' OR '.join(tags['tech'])})" if ('tech' in tags.keys()) and (len(tags['tech']) != 0) else ''
@@ -23,10 +22,10 @@ class HeadHunterApiManager:
         return f"{type_tag} AND {tech_tag} AND {city_tag}"
 
     @staticmethod
-    def get_jobs(tags=None, page: int = 1) -> Tuple[list, int]:
+    def get_vacancies(tags=None, page: int = 1) -> Tuple[list, int]:
         if tags is None:
-            tags = {'type': ['developer OR разработчик OR программист'], 'city': ''}
-        jobs = []  # jobs to be received
+            tags = {'type': ['developer', 'разработчик', 'программист'], 'city': ''}
+        vacancies = []  # vacancies to be received
         pages = 1  # pages to be received
         querystring = dict()  # querystring that we will construct
 
@@ -36,7 +35,7 @@ class HeadHunterApiManager:
         # update querystring according to hh.ru api specification
         querystring['text'] = tags_str  # set text
         querystring['page'] = page  # set page
-        querystring['per_page'] = 10  # 10 jobs per page by default
+        querystring['per_page'] = 10  # 10 vacancies per page by default
         querystring['specialization'] = 1  # specialization - "Информационные технологии, интернет, телеком" (id = 1)
         # encode querystring
         querystring = parse.urlencode(querystring)
@@ -44,71 +43,71 @@ class HeadHunterApiManager:
         with request.urlopen(f'{URL}/vacancies?{querystring}') as response:
             data = response.read()
             data = json.loads(data)
-            jobs.extend(data['items'])
+            vacancies.extend(data['items'])
             pages = int(data['pages'])
-        return jobs, pages
+        return vacancies, pages
 
     @staticmethod
-    def get_job(link: str) -> dict:
-        job_id = link.split('/')[-1]
-        job = {}
-        with request.urlopen(f'{URL}/vacancies/{job_id}') as response:
+    def get_vacancy(link: str) -> dict:
+        vacancy_id = link.split('/')[-1]
+        vacancy = {}
+        with request.urlopen(f'{URL}/vacancies/{vacancy_id}') as response:
             data = response.read()
-            job = json.loads(data)
+            vacancy = json.loads(data)
         try:
-            job_requirements = job['snippet']['requirement']
+            vacancy_requirements = vacancy['snippet']['requirement']
         except KeyError:
-            job_requirements = ''
-        type_tags = set([tag for tag, aliases in JOB_TAGS['type'].items()
-                         for alias in aliases if alias in (job['name'] + job_requirements).lower()])
-        tech_tags = set([tag for tag, aliases in JOB_TAGS['tech'].items()
-                         for alias in aliases if alias in (job['name'] + job_requirements).lower()])
+            vacancy_requirements = ''
+        type_tags = set([tag for tag, aliases in VACANCY_TAGS['type'].items()
+                         for alias in aliases if alias in (vacancy['name'] + vacancy_requirements).lower()])
+        tech_tags = set([tag for tag, aliases in VACANCY_TAGS['tech'].items()
+                         for alias in aliases if alias in (vacancy['name'] + vacancy_requirements).lower()])
         return {
-            'name': job['name'],
-            'employer': job['employer']['name'],
-            'employer_logo': job['employer']['logo_urls']['original'] if job['employer'][
-                                                                             'logo_urls'] is not None else '/static/nophoto.png',
-            'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': job['area']['name']},
+            'name': vacancy['name'],
+            'employer': vacancy['employer']['name'],
+            'employer_logo': vacancy['employer']['logo_urls']['original'] if vacancy['employer'][
+                                                                             'logo_urls'] is not None else '/static/img/nophoto.png',
+            'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': vacancy['area']['name']},
             # back to list to make JSON serialization easier
-            'url': job['alternate_url'],
-            'date': job['published_at'][:10],
+            'url': vacancy['alternate_url'],
+            'date': vacancy['published_at'][:10],
         }
 
     @staticmethod
-    def without_degree(jobs: list):
-        no_degree_jobs = []
+    def filter_degree(vacancies: list):
+        no_degree_vacancies = []
         avoid = ['высшее', 'образование', 'вуз', 'профильное', 'студент', 'бакалавр', 'bachelor', 'магистр']
-        for job in jobs:
-            requirements = job['snippet']['requirement']
+        for vacancy in vacancies:
+            requirements = vacancy['snippet']['requirement']
             try:
                 requirements = requirements.lower()
                 description = ''
-                with request.urlopen(job['url']) as response:
+                with request.urlopen(vacancy['url']) as response:
                     description = json.loads(response.read())['description']
                 if not any([r in requirements + description for r in avoid]):
-                    no_degree_jobs.append(job)
+                    no_degree_vacancies.append(vacancy)
             except AttributeError:
-                # since not every job posting on hh.ru has requirements,
+                # since not every vacancy on hh.ru has requirements,
                 # we can just skip ones without them
                 pass
-        return no_degree_jobs
+        return no_degree_vacancies
 
     @staticmethod
-    def prepare_jobs(jobs: list):
-        prepared_jobs = []
-        for job in jobs:
-            # get a set of tags that job name may contain. (we use set to exclude repetitive ones)
-            type_tags = set([tag for tag, aliases in JOB_TAGS['type'].items()   # None to str if None
-                             for alias in aliases if alias in (job['name'] + str(job['snippet']['requirement'])).lower()])
-            tech_tags = set([tag for tag, aliases in JOB_TAGS['tech'].items()
-                             for alias in aliases if alias in (job['name'] + str(job['snippet']['requirement'])).lower()])
-            prepared_jobs.append({
-                'name': job['name'],
-                'employer': job['employer']['name'],
-                'employer_logo': job['employer']['logo_urls']['original'] if job['employer']['logo_urls'] is not None else '/static/nophoto.png',
-                'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': job['area']['name']},
+    def prettify_vacancies(vacancies: list):
+        prettified = []
+        for vacancy in vacancies:
+            # get a set of tags that vacancy's name may contain. (we use set to exclude repetitive ones)
+            type_tags = set([tag for tag, aliases in VACANCY_TAGS['type'].items()  # None to str if None
+                             for alias in aliases if alias in (vacancy['name'] + str(vacancy['snippet']['requirement'])).lower()])
+            tech_tags = set([tag for tag, aliases in VACANCY_TAGS['tech'].items()
+                             for alias in aliases if alias in (vacancy['name'] + str(vacancy['snippet']['requirement'])).lower()])
+            prettified.append({
+                'name': vacancy['name'],
+                'employer': vacancy['employer']['name'],
+                'employer_logo': vacancy['employer']['logo_urls']['original'] if vacancy['employer']['logo_urls'] is not None else '/static/img/nophoto.png',
+                'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': vacancy['area']['name']},
                 # back to list to make JSON serialization easier
-                'url': job['alternate_url'],
-                'date': job['published_at'][:10],
+                'url': vacancy['alternate_url'],
+                'date': vacancy['published_at'][:10],
             })
-        return prepared_jobs
+        return prettified

@@ -3,17 +3,16 @@
         {% csrf_token  %}
         {% load static %}
         <title>В IT без высшего образования</title>
-        <link rel="icon" href="{% static 'favicon.ico' %}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
         <!--load static files-->
-        <link rel="stylesheet" href="{% static 'index.css' %}">
-        <script src="{% static 'index.js' %}"></script>
-        <script src="{% static 'hiring.js' %}"></script>
-        <script src="{% static 'utils.js' %}"></script>
-        <script src="{% static 'components.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/index.css' %}">
+        <script src="{% static 'js/index.js' %}"></script>
+        <script src="{% static 'js/hiring.js' %}"></script>
+        <script src="{% static 'js/utils.js' %}"></script>
+        <script src="{% static 'js/components.js' %}"></script>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154108789-3"></script>
         <script>
@@ -100,13 +99,12 @@
 
             // set initial vacancies and csrf token
             app.handlers.setPaidVacancies({{ paid|safe }});
-            app.handlers.setVacancies({{ jobs|safe }})
+            app.handlers.setVacancies({{ vacancies|safe }})
             utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
             {
-                let billId = localStorage.getItem('stdru.hashedjob')
+                let billId = localStorage.getItem('stdru.hashedvacancy')
                 if (billId !== null) {
-                    console.log('its not null!! ' + billId)
                     hiring.handlers.verifyBill(billId)
                 }
             }
@@ -118,7 +116,6 @@
                 document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
                 // request object is from static/script.js
                 app.state.request.tags.city = city
-                console.log(app.state.request)
                 app.handlers.sendRequest()
             })
         </script>

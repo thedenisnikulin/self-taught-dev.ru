@@ -1,5 +1,5 @@
 URL = "https://api.hh.ru"
-JOB_TAGS = {
+VACANCY_TAGS = {
     'type': {
         'fullstack': ['fullstack', 'full-stack', 'full stack'],
         'frontend': ['frontend', 'front-end', 'фронтенд'],

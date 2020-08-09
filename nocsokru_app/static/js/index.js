@@ -21,16 +21,15 @@ let app = {
         // send app.state.request to server with POST request
         sendRequest: () => {
             !$('#v-loading').length && $('.tags').after('<p id="v-loading" style="text-align: center;color: white;">Загрузка...</p>')
-            utils.sendRequest('/jobs/load', 'POST', JSON.stringify(app.state.request), {
+            utils.sendRequest('/vacancies/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
-                    console.log('set to 1')
                     app.state.request.page = 1
-                    app.handlers.setVacancies(data.jobs)
-                    console.log(data.paid)
+                    app.handlers.setVacancies(data.vacancies)
                     app.handlers.setPaidVacancies(data.paid)
                     app.state.pages = data.pages
                     app.handlers.addLoadButton(app.state.pages)
                     $('#v-loading').remove()
+                    console.log(`sendRequest:\nvacancies: ${app.state.vacancies.length}\npages: ${app.state.pages}\non page: ${app.state.request.page}`)
                 }
             })
         },
@@ -38,15 +37,15 @@ let app = {
         loadMore: (btn) => {
             btn.innerHTML = "Загрузка..."
             btn.disabled = true;
-            utils.sendRequest('/jobs/load', 'POST', JSON.stringify(app.state.request), {
+            utils.sendRequest('/vacancies/load', 'POST', JSON.stringify(app.state.request), {
                 success: (data) => {
-                    app.handlers.addVacancies(data.jobs)
+                    app.handlers.addVacancies(data.vacancies)
                     app.state.pages = data.pages
                     app.state.request.page++
                     app.handlers.addLoadButton(app.state.pages)
-                    console.log(`request: ${JSON.stringify(app.state.request)}\npages: ${app.state.pages}\nvacancies_length: ${app.state.vacancies.length}`)
                     btn.disabled = false;
                     btn.innerHTML = "Загрузить ещё"
+                    console.log(`sendRequest:\nvacancies: ${app.state.vacancies.length}\npages: ${app.state.pages}\non page: ${app.state.request.page}`)
                 }
             })
         },
@@ -78,9 +77,9 @@ let app = {
             }
         },
         // add vacancies to DOM at the end of the vacancies list
-        addVacancies: (jobs) => {
+        addVacancies: (vacancies) => {
             app.state.vacancies = []
-            document.getElementById("vacancies").innerHTML += jobs.map(
+            document.getElementById("vacancies").innerHTML += vacancies.map(
                 v => {
                     app.state.vacancies.push(v);
                     return components.renderVacancy(v)
@@ -88,14 +87,14 @@ let app = {
             ).join('')
         },
         // remove current vacancies and set new ones
-        setVacancies: (jobs) => {
+        setVacancies: (vacancies) => {
             document.getElementById("vacancies").innerHTML = ""
-            app.handlers.addVacancies(jobs)
+            app.handlers.addVacancies(vacancies)
         },
-        setPaidVacancies: (jobs) => {
+        setPaidVacancies: (vacancies) => {
             document.getElementById("paid-vacancies").innerHTML = ""
             app.state.paidVacancies = []
-            document.getElementById("paid-vacancies").innerHTML = jobs.map(
+            document.getElementById("paid-vacancies").innerHTML = vacancies.map(
                 v => {
                     app.state.paidVacancies.push(v);
                     return components.renderVacancy(v)
@@ -111,11 +110,9 @@ let app = {
         addLoadButton: (pgs) => {
             app.state.pages = pgs
             if (app.state.request.page < pgs) {
-                console.log('insert')
                 // if no element with id 'load-more', then place such element after 'vacancies'
                 !document.getElementById("loadbtn") && $("#loadbtn-container").append("<button id='loadbtn' onclick='app.handlers.loadMore(this)'>Загрузить ещё</button>")
             } else {
-                console.log('remove')
                 $('#loadbtn').remove()
             }
         },

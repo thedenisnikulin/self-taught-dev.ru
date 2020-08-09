@@ -5,7 +5,6 @@
         {% csrf_token  %}
         {% load static %}
         <title>Разместить вакансию</title>
-        <link rel="icon" href="{% static 'favicon.ico' %}">
         <!-- jquery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <!-- bootstrap -->
@@ -17,11 +16,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha512-hgoywpb1bcTi1B5kKwogCTG4cvTzDmFCJZWjit4ZimDIgXu7Dwsreq8GOQjKVUxFwxCWkLcJN5EN0W0aOngs4g==" crossorigin="anonymous"></script>        
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha512-nATinx3+kN7dKuXEB0XLIpTd7j8QahdyJjE24jTJf4HASidUCFFN/TkSVn3CifGmWwfC2mO/VmFQ6hRn2IcAwg==" crossorigin="anonymous" />
         <!--load static files-->
-        <link rel="stylesheet" href="{% static 'hiring.css' %}">
-        <script src="{% static 'hiring.js' %}"></script>
-        <script src="{% static 'index.js' %}"></script>
-        <script src="{% static 'utils.js' %}"></script>
-        <script src="{% static 'components.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/hiring.css' %}">
+        <script src="{% static 'js/hiring.js' %}"></script>
+        <script src="{% static 'js/index.js' %}"></script>
+        <script src="{% static 'js/utils.js' %}"></script>
+        <script src="{% static 'js/components.js' %}"></script>
     </head>
     <body>
         <div class="header">
@@ -80,9 +79,8 @@
         <script>
             utils.csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
             $(document).ready(() => {
-                components.renderGenerator(hiring.state.job)
+                components.renderGenerator(hiring.state.vacancy)
                 app.handlers.setupEmail()
-                // console.log(components.renderVacancy(hiring.state.job))
                 $(document).on('click', '.fill-in-btn', (e) => {
                     e.preventDefault();
                     $('.city-to-replace').replaceWith(components.cityDropdownMenu())
@@ -93,7 +91,7 @@
                         document.getElementById('dd-button').innerHTML = city + " " + "<span class='caret'></span>"
                         document.getElementsByClassName('city')[0].innerHTML = city;
                         // request object is from static/script.js
-                        hiring.state.job.tags.city = city
+                        hiring.state.vacancy.tags.city = city
                     });
                     $('.tags-editor').selectize({
                         labelField: 'name',
@@ -124,10 +122,10 @@
                             const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
                             let tagtype;
                             if (techtags.includes(value)) {
-                                hiring.state.job.tags.tech.push(value)
+                                hiring.state.vacancy.tags.tech.push(value)
                                 tagtype = 'tech'
                             } else {
-                                hiring.state.job.tags.type.push(value)
+                                hiring.state.vacancy.tags.type.push(value)
                                 tagtype = 'type'
                             };
                             $('.v-tags').append(`<div class="v-${tagtype}">${value}</div>`)
@@ -136,12 +134,12 @@
                             const techtags = ['Python', 'Java', 'JavaScript', 'C#', 'C++', 'Go', 'PHP'].map(i => i.toLowerCase())
                             const typetags = ['Fullstack', 'Frontend', 'Backend', 'Mobile', 'Junior'].map(i => i.toLowerCase())
                             let tags = '';
-                            hiring.state.job.tags.tech = hiring.state.job.tags.tech.filter(t => t !== value)
-                            hiring.state.job.tags.type = hiring.state.job.tags.type.filter(t => t !== value)
-                            for(const t of hiring.state.job.tags.type) {
+                            hiring.state.vacancy.tags.tech = hiring.state.vacancy.tags.tech.filter(t => t !== value)
+                            hiring.state.vacancy.tags.type = hiring.state.vacancy.tags.type.filter(t => t !== value)
+                            for(const t of hiring.state.vacancy.tags.type) {
                                 tags += `<div class="v-type">${t}</div>`
                             }
-                            for(const t of hiring.state.job.tags.tech) {
+                            for(const t of hiring.state.vacancy.tags.tech) {
                                 tags += `<div class="v-tech">${t}</div>`
                             }
                             $('.v-tags').html(tags)

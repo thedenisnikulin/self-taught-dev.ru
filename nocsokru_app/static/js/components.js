@@ -71,12 +71,12 @@ const components = {
                 ${components.renderVacancy(vacancy)}
                 <div class="gen-content">
                     <p class='gen-text'>Введите ссылку на вашу вакансию на hh.ru</p>
-                    <form class='gen-form'onsubmit="return hiring.handlers.requestJobByLink()">
-                        <input class="hhru-link" placeholder="https://hh.ru/vacancy/12345678"  name="hhru-link" onchange="hiring.state.jobLink = this.value">
+                    <form class='gen-form'onsubmit="return hiring.handlers.requestVacancyByLink()">
+                        <input class="hhru-link" placeholder="https://hh.ru/vacancy/12345678"  name="hhru-link" onchange="hiring.state.vacancyLink = this.value">
                         <input type="submit" class="gen-btn gi" value="Сгенерировать вакансию">
                     </form>
                     <p class='gen-text gi'>или</p>
-                    <button class="fill-in-btn" onclick="components.renderEditor(hiring.state.job)">Заполнить самостоятельно</button>
+                    <button class="fill-in-btn" onclick="components.renderEditor(hiring.state.vacancy)">Заполнить самостоятельно</button>
                 </div>
             </div>
         `),
@@ -109,10 +109,10 @@ const components = {
                         </div>
                         <label>Метки</label>
                         <input type="text" class='tags-editor'>
-                        <input onclick="components.renderPaymentProcessor(hiring.state.job)" type="submit" class="gen-btn gi" value="Продолжить">
+                        <input onclick="components.renderPaymentProcessor(hiring.state.vacancy)" type="submit" class="gen-btn gi" value="Продолжить">
                     </form>
                     <p class='gen-text gi'>или</p>
-                    <button class="fill-in-btn" onclick="components.renderGenerator(hiring.state.job)">Заполнить по ссылке</button>
+                    <button class="fill-in-btn" onclick="components.renderGenerator(hiring.state.vacancy)">Заполнить по ссылке</button>
                 </div>
             </div>
         `),

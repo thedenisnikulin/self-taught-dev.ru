@@ -1,9 +1,9 @@
 let hiring = {
     state: {
-        job: {
+        vacancy: {
             name: 'Должность',
             employer: 'Ваша компания',
-            employer_logo: '/static/nophoto.png',
+            employer_logo: '/static/img/nophoto.png',
             tags: {
                 tech: [],
                 type: [],
@@ -13,22 +13,19 @@ let hiring = {
             date: new Date().toISOString().slice(0,10),
             color: '#F5BA78'
         },
-        jobLink: ''
+        vacancyLink: ''
     },
     handlers: {
         requestPayment: () => {
-            // TODO add time
-            const hashedJob = utils.generateHash(JSON.stringify(hiring.state.job) + new Date().toISOString()).toString()
+            const hashedVacancy = utils.generateHash(JSON.stringify(hiring.state.vacancy) + new Date().toISOString()).toString()
             const billData = {
-                billId: hashedJob,
+                billId: hashedVacancy,
                 promocode: new URLSearchParams(window.location.search).get('promo')
             }
-            console.log(billData)
-            localStorage.setItem('stdru.hashedjob', hashedJob)
+            localStorage.setItem('stdru.hashedvacancy', hashedVacancy)
 
             utils.sendRequest('/bills/create', 'POST', JSON.stringify(billData), {
                 success: (response) => {
-                    console.log('got url')
                     hiring.handlers.openBill(response.payUrl)
                 }
             })
@@ -36,19 +33,18 @@ let hiring = {
         },
         handleChange: (el) => {
             const { value, name } = el;
-            hiring.state.job = { ...hiring.state.job, [name]: value };
+            hiring.state.vacancy = { ...hiring.state.vacancy, [name]: value };
             if (name === "employer_logo") {
                 $('.employer_logo').attr('src', value)
             } else if (name === 'color') {
                 let v = value.startsWith('#') ? value : `#${value}`
                 $('.vacancy').attr('style', `border: 3px ${v} solid`)
-                hiring.state.job.color = v;
+                hiring.state.vacancy.color = v;
             } else if (name === 'url') {
                 $('.respond-btn').attr('onclick', `window.open('${value}', '_blank')`)
             } else {
                 $(`.${name}`).html(value)
             }
-            console.log(hiring.state.job)
         },
         openBill: (payUrl) => {
            params = {
@@ -56,44 +52,36 @@ let hiring = {
             }
             QiwiCheckout.openInvoice(params)
                 .then(response => {
-                    console.log('successfully paid:')
-                    console.log(response)
-                    hiring.handlers.verifyBill(localStorage.getItem('stdru.hashedjob'))
+                    hiring.handlers.verifyBill(localStorage.getItem('stdru.hashedvacancy'))
                 })
                 .catch(error => {
-                    console.log(error)
                     if (error.reason === "POPUP_CLOSED") {
-                        hiring.handlers.verifyBill(localStorage.getItem('stdru.hashedjob'))
+                        hiring.handlers.verifyBill(localStorage.getItem('stdru.hashedvacancy'))
                     }
                 })
         },
         verifyBill: (billId) => {
-            utils.sendRequest('/bills/verify', 'POST', localStorage.getItem('stdru.hashedjob'), {
+            utils.sendRequest('/bills/verify', 'POST', localStorage.getItem('stdru.hashedvacancy'), {
                 success: (response) => {
-                    console.log('is paid ? ' + response.isPaid)
                     if (response.isPaid === true) {
-                        console.log('gonna save your job!')
                         // do database stuff
-                        utils.sendRequest('/jobs/create', 'POST', JSON.stringify(hiring.state.job), {
+                        utils.sendRequest('/vacancies/create', 'POST', JSON.stringify(hiring.state.vacancy), {
                             success: (response) => {
-                                console.log('created')
-                                localStorage.removeItem('stdru.hashedjob')
-                                console.log(`here ${localStorage.getItem('stdru.hashedjob')}`)
+                                localStorage.removeItem('stdru.hashedvacancy')
                             },
                         })
                     }
                 }
             })
         },
-        requestJobByLink: () => {
-            utils.sendRequest('/jobs/generate', 'POST', JSON.stringify({jobLink: hiring.state.jobLink}), {
+        requestVacancyByLink: () => {
+            utils.sendRequest('/vacancies/getbylink', 'POST', JSON.stringify({vacancyLink: hiring.state.vacancyLink}), {
                 success: (response) => {
                     $('.v-tags').html('')
-                    response.job.color = '#F5BA78'
-                    hiring.state.job = response.job
-                    components.renderGenerator(hiring.state.job)
-                    $('.gen-content').html(`<button onclick='components.renderPaymentProcessor(hiring.state.job)' class='gen-btn gi'>Продолжить</button>`)
-                    console.log(hiring.state.job)
+                    response.vacancy.color = '#F5BA78'
+                    hiring.state.vacancy = response.vacancy
+                    components.renderGenerator(hiring.state.vacancy)
+                    $('.gen-content').html(`<button onclick='components.renderPaymentProcessor(hiring.state.vacancy)' class='gen-btn gi'>Продолжить</button>`)
                 }
             });
             return false;
