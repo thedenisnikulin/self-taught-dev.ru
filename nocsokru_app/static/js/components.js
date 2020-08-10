@@ -61,7 +61,7 @@ const components = {
                 </div>
                 <div class="v-end-container">
                     <p class="city">${vacancy.tags.city}</p>
-                    <button class="respond-btn" onclick="window.open('${vacancy.url}', '_blank')">Откликнуться</button>
+                    <button class="respond-btn" onclick="window.open('${vacancy.url}', '_blank')">Посмотреть</button>
                 </div>
             </div>
         `,
@@ -102,7 +102,7 @@ const components = {
                                     <input class='city-to-replace f-inp' name="city" onchange="hiring.handlers.handleChange(this)">
                                     <label>Цвет границ</label>
                                     <input class="f-inp" placeholder='#F5BA78' name="color" onchange="hiring.handlers.handleChange(this)">
-                                    <label>Ссылка для отклика</label>
+                                    <label>Ссылка на вакансию</label>
                                     <input class="f-inp" name="url" onchange="hiring.handlers.handleChange(this)">
                                 </div>
                             </div>
