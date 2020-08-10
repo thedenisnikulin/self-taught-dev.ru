@@ -48,7 +48,6 @@ class QiwiApiManager:
         data = request.urlopen(r).read()
         data = json.loads(data)
         status = data['status']['value']
-        print(status)
         if status == "PAID":
             return True
         return False

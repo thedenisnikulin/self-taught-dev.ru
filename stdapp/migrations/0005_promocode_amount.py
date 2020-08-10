@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nocsokru_app', '0004_promocode'),
+        ('stdapp', '0004_promocode'),
     ]
 
     operations = [

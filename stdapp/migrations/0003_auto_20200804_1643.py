@@ -7,7 +7,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nocsokru_app', '0002_auto_20200723_1629'),
+        ('stdapp', '0002_auto_20200723_1629'),
     ]
 
     operations = [

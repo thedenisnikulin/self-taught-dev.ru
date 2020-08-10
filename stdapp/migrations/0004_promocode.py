@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nocsokru_app', '0003_auto_20200804_1643'),
+        ('stdapp', '0003_auto_20200804_1643'),
     ]
 
     operations = [

@@ -18,8 +18,6 @@ class PaidVacancy(models.Model):
                          for alias in aliases if alias in self.tags])
         tech_tags = set([tag for tag, aliases in VACANCY_TAGS['tech'].items()
                          for alias in aliases if alias in self.tags])
-        print(self.tags)
-        print(tech_tags)
         return {
             'name': self.name,
             'employer': self.employer,
