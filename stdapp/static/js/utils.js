@@ -13,7 +13,7 @@ let utils = {
             contentType:"application/json; charset=utf-8",
             dataType:"json",
             success: handlers.success,
-            error: handlers.error === undefined ? () => alert('Internal Server Error.') : handlers.error
+            error: handlers.error === undefined ? () => console.log('Internal Server Error.') : handlers.error
         })
     },
     generateHash: (str) => {

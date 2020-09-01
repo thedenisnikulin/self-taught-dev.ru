@@ -22,7 +22,7 @@ let hiring = {
                 billId: hashedVacancy,
                 promocode: new URLSearchParams(window.location.search).get('promo')
             }
-		localStorage.setItem('stdru.vacancy', hiring.state.vacancy);
+		localStorage.setItem('stdru.vacancy', JSON.stringify(hiring.state.vacancy));
             localStorage.setItem('stdru.hashedvacancy', hashedVacancy)
 
             utils.sendRequest('/bills/create', 'POST', JSON.stringify(billData), {
