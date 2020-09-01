@@ -22,6 +22,7 @@ let hiring = {
                 billId: hashedVacancy,
                 promocode: new URLSearchParams(window.location.search).get('promo')
             }
+		localStorage.setItem('stdru.vacancy', hiring.state.vacancy);
             localStorage.setItem('stdru.hashedvacancy', hashedVacancy)
 
             utils.sendRequest('/bills/create', 'POST', JSON.stringify(billData), {
@@ -65,9 +66,10 @@ let hiring = {
                 success: (response) => {
                     if (response.isPaid === true) {
                         // do database stuff
-                        utils.sendRequest('/vacancies/create', 'POST', JSON.stringify(hiring.state.vacancy), {
+                        utils.sendRequest('/vacancies/create', 'POST', localStorage.getItem('stdru.vacancy'), {
                             success: (response) => {
                                 localStorage.removeItem('stdru.hashedvacancy')
+				    localStorage.removeItem('stdru.vacancy');
                             },
                         })
                     }
