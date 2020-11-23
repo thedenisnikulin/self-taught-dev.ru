@@ -2,15 +2,15 @@ import json
 import urllib
 import datetime
 # local
-from config import QIWI_SECRET, QIWI_THEME_CODE, QIWI_DEFAULT_AMOUNT
+from config import QIWI_THEME_CODE, QIWI_DEFAULT_AMOUNT
 from ..models import PromoCode
 
 class QiwiApiManager:
-	def __init__(self, bill_id: str, method: str):
+	def __init__(self, bill_id: str, method: str, secret: str):
 		self.request = urllib.request.Request(
 			url=f"https://api.qiwi.com/partner/bill/v1/bills/{bill_id}", 
 			method=method)
-		self.request.add_header('Authorization',f'Bearer {QIWI_SECRET}')
+		self.request.add_header('Authorization',f'Bearer {secret}')
 		self.request.add_header('Content-Type', 'application/json')
 		self.request.add_header('Accept', 'application/json')
 	

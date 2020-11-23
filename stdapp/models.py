@@ -15,14 +15,17 @@ class PaidVacancy(models.Model):
 
     def serialize(self):
         type_tags = set([tag for tag, aliases in VACANCY_TAGS['type'].items()
-                         for alias in aliases if alias in self.tags])
+            for alias in aliases if alias in self.tags])
         tech_tags = set([tag for tag, aliases in VACANCY_TAGS['tech'].items()
-                         for alias in aliases if alias in self.tags])
+            for alias in aliases if alias in self.tags])
         return {
             'name': self.name,
             'employer': self.employer,
             'employer_logo': self.employer_logo,
-            'tags': {'type': list(type_tags), 'tech': list(tech_tags), 'city': self.city},
+            'tags': {
+				'type': list(type_tags), 
+				'tech': list(tech_tags), 
+				'city': self.city},
             'url': self.url,
             'date': self.date,
             'color': self.color

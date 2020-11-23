@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 import json
 # local
+from config import QIWI_SECRET
 from .services.hh_api_management import HeadHunterApiManager
 from .services.qiwi_api_management import QiwiApiManager
 from .models import PaidVacancy
@@ -41,7 +42,10 @@ def load_vacancies(req: HttpRequest):
 				if any(t in tag for t in tags_list) or v.city == tags['city']:
 					paid_vacancies.append(v.serialize())
 					break
-		return HttpResponse(json.dumps({'vacancies': vacancies, 'paid': paid_vacancies, 'pages': pages}))
+		return HttpResponse(json.dumps({
+			'vacancies': vacancies, 
+			'paid': paid_vacancies, 
+			'pages': pages}))
 
 
 def create_bill(req: HttpRequest):
@@ -51,7 +55,7 @@ def create_bill(req: HttpRequest):
 		req_body = json.loads(req.body.decode('utf-8'))
 		bill_id = req_body['billId']
 		promocode = req_body['promocode']
-		qiwiapi = QiwiApiManager(bill_id, "PUT")
+		qiwiapi = QiwiApiManager(bill_id, "PUT", QIWI_SECRET)
 		pay_url = qiwiapi.bill(promocode)
 		return HttpResponse(json.dumps({'payUrl': pay_url}))
 
@@ -59,7 +63,7 @@ def create_bill(req: HttpRequest):
 def verify_bill(req: HttpRequest):
 	if req.method == "POST":
 		bill_id = json.loads(req.body.decode('utf-8'))
-		qiwiapi = QiwiApiManager(bill_id, "GET")
+		qiwiapi = QiwiApiManager(bill_id, "GET", QIWI_SECRET)
 		is_paid = qiwiapi.is_paid()
 		return HttpResponse(json.dumps({'isPaid': is_paid}))
 
