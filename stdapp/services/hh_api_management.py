@@ -8,44 +8,60 @@ from .constants import URL, VACANCY_TAGS
 class HeadHunterApiManager:
     @staticmethod
     def prepare_tags(tags: dict) -> str:
-        for k in tags.keys():
-            # to lower case
-            tags[k] = [t.lower() for t in tags[k]] if type(tags[k]) is list else tags[k].lower()
-        # AND & OR - operators from hh.ru api
-        type_tag = f"({' OR '.join(tags['type'])})" if ('type' in tags.keys()) and (len(tags['type']) != 0) else ''
-        tech_tag = f"({' OR '.join(tags['tech'])})" if ('tech' in tags.keys()) and (len(tags['tech']) != 0) else ''
-        city_tag = tags['city']
-        # if both are empty, just fill in 'developer', 'cos we don't want to have an empty query
-        if type_tag + tech_tag + city_tag == '':
-            type_tag = 'developer OR разработчик OR программист'
+        if (len(tags.get("tech", [])) \
+                + len(tags.get("type", [])) \
+                + len(tags.get("city", "")) == 0):
+            # if no tags, set default.
+            return "developer or разработчик or программист"
 
-        return f"{type_tag} AND {tech_tag} AND {city_tag}"
+        type_tags = ""
+        tech_tags = ""
+        city_tag = ""
+
+        for k in tags.keys():
+            # Lowercase tags.
+            if type(tags[k]) is list:
+                tags[k] = [t.lower() for t in tags[k]]
+            else:
+                tags[k] = tags[k].lower()
+
+        # Make a string out of dict.
+        # Will look like "(a OR b) AND (c OR d) AND e". 
+        # AND & OR - operators from hh.ru api.
+        if ('type' in tags.keys()) and (len(tags['type']) != 0):
+            type_tags ="({})".format(' OR '.join(tags['type']))
+
+        if ('tech' in tags.keys()) and (len(tags['tech']) != 0):
+            tech_tags = "({})".format(' OR '.join(tags['tech']))
+
+        city_tag = tags['city']
+
+        return f"{type_tags} AND {tech_tags} AND {city_tag}"
 
     @staticmethod
     def get_vacancies(tags=None, page: int = 1) -> Tuple[list, int]:
         if tags is None:
             tags = {'type': ['developer', 'разработчик', 'программист'], 'city': ''}
-        vacancies = []  # vacancies to be received
-        pages = 1  # pages to be received
-        querystring = dict()  # querystring that we will construct
-
-        # prepare tags
-        tags_str = HeadHunterApiManager.prepare_tags(tags)
+        vacancies = []          # vacancies to be received
+        pages = 1               # pages to be received
+        querystring = dict()    # querystring that we will construct
 
         # update querystring according to hh.ru api specification
-        querystring['text'] = tags_str  # set text
-        querystring['page'] = page  # set page
+        querystring['text'] = HeadHunterApiManager.prepare_tags(tags)
+        querystring['page'] = page
         querystring['per_page'] = 10  # 10 vacancies per page by default
-        querystring['specialization'] = 1  # specialization - "Информационные технологии, интернет, телеком" (id = 1)
+        # "Информационные технологии, интернет, телеком" (id = 1)
+        querystring['specialization'] = 1
+
         # encode querystring
         querystring = parse.urlencode(querystring)
         # send request to hh.ru api and get data
         with request.urlopen(f'{URL}/vacancies?{querystring}') as response:
             data = response.read()
             data = json.loads(data)
-            vacancies.extend(data['items'])
+            vacancies = data.get("items", [])
             pages = int(data['pages'])
-        return vacancies, pages
+        return (vacancies, pages)
 
     @staticmethod
     def get_vacancy(link: str) -> dict:
@@ -76,20 +92,22 @@ class HeadHunterApiManager:
     @staticmethod
     def filter_degree(vacancies: list):
         no_degree_vacancies = []
-        avoid = ['высшее', 'образование', 'вуз', 'профильное', 'студент', 'бакалавр', 'bachelor', 'магистр']
+        avoid = ['высшее', 'образование', 'вуз', 'профильное',
+                'студент', 'бакалавр', 'bachelor', 'магистр']
         for vacancy in vacancies:
             requirements = vacancy['snippet']['requirement']
             try:
                 requirements = requirements.lower()
-                description = ''
-                with request.urlopen(vacancy['url']) as response:
-                    description = json.loads(response.read())['description']
-                if not any([r in requirements + description for r in avoid]):
-                    no_degree_vacancies.append(vacancy)
             except AttributeError:
-                # since not every vacancy on hh.ru has requirements,
-                # we can just skip ones without them
-                pass
+                # Since not all vacancies on hh.ru has requirements,
+                # we can just skip ones without them.
+                continue
+            description = ''
+            with request.urlopen(vacancy['url']) as response:
+                description = json.loads(response.read())['description']
+            if not any([r in (requirements + description) for r in avoid]):
+                no_degree_vacancies.append(vacancy)
+
         return no_degree_vacancies
 
     @staticmethod
