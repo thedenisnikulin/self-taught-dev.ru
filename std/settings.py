@@ -14,7 +14,7 @@ import os
 import dj_database_url
 import django_heroku
 # local
-from config import DATABASE_URL
+from config import DJANGO_SECRETKEY, DATABASE_URL
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '7cu-fow8*@pv(-b3f!94)kh@8zj=bzau8dowx@&8nor62%$q_8'
+SECRET_KEY = DJANGO_SECRETKEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
