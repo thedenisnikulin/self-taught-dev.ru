@@ -8,12 +8,12 @@ from ..models import PromoCode
 class QiwiApiManager:
 	def __init__(self, bill_id: str, method: str, secret: str):
 		self.request = urllib.request.Request(
-			url=f"https://api.qiwi.com/partner/bill/v1/bills/{bill_id}", 
+			url=f"https://api.qiwi.com/partner/bill/v1/bills/{bill_id}",
 			method=method)
 		self.request.add_header('Authorization',f'Bearer {secret}')
 		self.request.add_header('Content-Type', 'application/json')
 		self.request.add_header('Accept', 'application/json')
-	
+
 	def bill(self, promocode: str = None) -> str:
 		amount = QIWI_DEFAULT_AMOUNT
 		if promocode:
@@ -40,7 +40,7 @@ class QiwiApiManager:
 		)).read()
 		data = json.loads(data)
 		return data['payUrl']
-	
+
 	def is_paid(self) -> bool:
 		data = urllib.request.urlopen(self.request).read()
 		data = json.loads(data)
